@@ -6,11 +6,11 @@ class MentionsController < ApplicationController
     def index
         count = 0
         @offset = 0
-        options = {}
+        scope = Mention
         if params[:offset]
-            options[:offset] = params[:offset].to_i
-            options[:limit] = 2**32
-            @prev_offset = @offset = options[:offset]
+            offset = params[:offset].to_i
+            scope = scope.offset(offset).limit(2**32)
+            @prev_offset = @offset = offset
         end
         if params[:next_offset] && params[:next_offset].to_i > 0
             @next_offset = params[:next_offset].to_i
@@ -18,9 +18,8 @@ class MentionsController < ApplicationController
             @next_offset = 0
         end
         mentions = []
-        Mention.find(:all, options.merge(
-                     :conditions => { :mentioned_id => @user.id },
-                     :order => "created_on DESC")).each do |mention|
+        scope.where(:mentioned_id => @user.id)
+             .order("created_on DESC").each do |mention|
             if mention.title.present? && (!mention.mentioning.respond_to?(:visible?) || mention.mentioning.visible?)
                 mentions << mention
                 count += 1

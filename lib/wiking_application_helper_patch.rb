@@ -69,8 +69,8 @@ module WikingApplicationHelperPatch
                         end
                     when 'version'
                         if project
-                            name = value.gsub(%r{^"(.*)"$}, "\\1")
-                            current = project.versions.find(:all).sort.reverse.select{ |v| v.is_a?(Version) && v.closed? }.first
+                            name = value.gsub(%r{\A"(.*)"\z}, "\\1")
+                            current = project.versions.sort.reverse.select{ |v| v.is_a?(Version) && v.closed? }.first
                             if current
                                 if version = project.versions.find_by_name(name)
                                     result = (current <=> version)
@@ -116,7 +116,7 @@ module WikingApplicationHelperPatch
 
         HTMLATTRS = %r{(?:\s+[\w\d\-]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^"'>\s]+))?)*}
 
-        WIKING_REPLACEABLE_RE = %r{(<(/)?([\w\d]+)#{HTMLATTRS}\s*/?>)(.*?)(?=</?[\w\d]+#{HTMLATTRS}\s*/?>|$)}
+        WIKING_REPLACEABLE_RE = %r{(<(/)?([\w\d]+)#{HTMLATTRS}\s*/?>)(.*?)(?=</?[\w\d]+#{HTMLATTRS}\s*/?>|\z)}
 
         def parse_glyphs(text, project, obj, attr, only_path, options)
             codepre = 0
@@ -139,7 +139,7 @@ module WikingApplicationHelperPatch
             end
         end
 
-        WIKING_FOOTNOTE_RE = %r{([^\s\(,\-.])(!)?\(\(([^\)]*)\)\)(?=(?=[[:punct:]]\W)|,|\s|\]|<|$)}
+        WIKING_FOOTNOTE_RE = %r{([^\s\(,\-.])(!)?\(\(([^\)]*)\)\)(?=(?=[[:punct:]]\W)|,|\s|\]|<|\z)}
 
         def parse_footnotes(text, project, obj, attr, only_path, options)
             footnotes = []
@@ -223,7 +223,7 @@ module WikingApplicationHelperPatch
                     case resource
                     when 'wikipedia'
                         lang = (option || 'en')
-                        if page =~ %r{^(.+?)#(.*)$}
+                        if page =~ %r{\A(.+?)#(.*)\z}
                             page, anchor = $1, $2
                         end
                         page = URI.escape(page.gsub(%r{\s}, '_'))
@@ -232,11 +232,11 @@ module WikingApplicationHelperPatch
                     when 'google'
                         link_to(h(title), "http://www.google.com/search?q=#{URI.escape(page)}", :class => 'wiking external wiking-google')
                     when 'redmine', 'chiliproject'
-                        if page =~ %r{^#([0-9]+)$}
+                        if page =~ %r{\A#([0-9]+)\z}
                             page = $1
                             link_to(h(title).gsub(%r{##{page}}){ |s| "!##{page}" }, "http://www.#{resource}.org/issues/#{page}", :class => "wiking external wiking-#{resource} wiking-issue")
                         else
-                            if page =~ %r{^(.+?)#(.*)$}
+                            if page =~ %r{\A(.+?)#(.*)\z}
                                 page, anchor = $1, $2
                             end
                             page = URI.escape(page)
@@ -252,7 +252,7 @@ module WikingApplicationHelperPatch
             parse_wiki_links_without_wiking(text, project, obj, attr, only_path, options)
         end
 
-        WIKING_USER_RE = %r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(user|file)(\(([^\)]+?)\)|\[([^\]]+?)\])?(?:(#)(\d+)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]]\W)|,|\s|\]|<|$)}m
+        WIKING_USER_RE = %r{([\s\(,\-\[\>]|\A)(!)?(([a-z0-9\-_]+):)?(user|file)(\(([^\)]+?)\)|\[([^\]]+?)\])?(?:(#)(\d+)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]]\W)|,|\s|\]|<|\z)}m
 
         def parse_redmine_links_with_wiking(text, project, obj, attr, only_path, options)
             parse_redmine_links_without_wiking(text, project, obj, attr, only_path, options)
@@ -295,7 +295,7 @@ module WikingApplicationHelperPatch
                             if user = User.find_by_id(oid)
                                 name = display || user.name(format)
                                 if user.active?
-                                    user_id = user.login.match(%r{^[a-z0-9_\-]+$}i) ? user.login.downcase : user
+                                    user_id = user.login.match(%r{\A[a-z0-9_\-]+\z}i) ? user.login.downcase : user
                                     link = link_to(h(name), { :only_path => only_path, :controller => 'users', :action => 'show', :id => user_id },
                                                               :class => 'user')
                                 else
@@ -315,13 +315,13 @@ module WikingApplicationHelperPatch
                             end
                         end
                     elsif sep == ':'
-                        oname = identifier.gsub(%r{^"(.*)"$}, "\\1")
+                        oname = identifier.gsub(%r{\A"(.*)"\z}, "\\1")
                         case prefix
                         when 'user'
                             if user = User.find_by_login(oname)
                                 name = display || user.name(format)
                                 if user.active?
-                                    user_id = user.login.match(%r{^[a-z0-9_\-]+$}i) ? user.login.downcase : user
+                                    user_id = user.login.match(%r{\A[a-z0-9_\-]+\z}i) ? user.login.downcase : user
                                     link = link_to(h(name), { :only_path => only_path, :controller => 'users', :action => 'show', :id => user_id },
                                                               :class => 'user')
                                 else
@@ -337,7 +337,7 @@ module WikingApplicationHelperPatch
                                     conditions = "(#{conditions}) OR "
                                     conditions << "(container_type = 'Version' AND container_id IN (#{project.versions.collect{ |version| version.id }.join(', ')}))"
                                 end
-                                if file = Attachment.find_by_filename(oname, :conditions => conditions)
+                                if file = Attachment.where(conditions).find_by_filename(oname)
                                     name = display || file.filename
                                     link = link_to(h(name), { :only_path => only_path, :controller => 'attachments', :action => 'download', :id => file },
                                                               :class => 'attachment')
@@ -352,7 +352,7 @@ module WikingApplicationHelperPatch
         end
 
         def inline_dashes(text)
-            text.gsub!(%r{([^\w\-])(-{2,3})(?=[^\w\-]|$)}) do |match|
+            text.gsub!(%r{([^\w\-])(-{2,3})(?=[^\w\-]|\z)}) do |match|
                 case $2
                 when '--'
                     "#{$1}–"
@@ -362,7 +362,7 @@ module WikingApplicationHelperPatch
             end
         end
 
-        WIKING_QUOTES_RE = %r{(?:(^|>|\s|[^\w"])(!)?"(?=\w|[^\w"]*")|(\w[^\w"\s]*|[^\w"\s]*)(!)?"(?=[^\w"\s]*(?:\s|<|$)))}
+        WIKING_QUOTES_RE = %r{(?:(\A|>|\s|[^\w"])(!)?"(?=\w|[^\w"]*")|(\w[^\w"\s]*|[^\w"\s]*)(!)?"(?=[^\w"\s]*(?:\s|<|\z)))}
 
         def inline_quotes(text)
             text.gsub!(WIKING_QUOTES_RE) do |match|
@@ -398,7 +398,7 @@ module WikingApplicationHelperPatch
         end
 
         def link_to_user_with_login(user, options = {})
-            if user.is_a?(User) && user.active? && user.login.match(%r{^[a-z0-9_\-]+$}i) && user.login != 'current'
+            if user.is_a?(User) && user.active? && user.login.match(%r{\A[a-z0-9_\-]+\z}i) && user.login != 'current'
                 link_to(h(user.name(options[:format])), :controller => 'users', :action => 'show', :id => user.login.downcase)
             else
                 link_to_user_without_login(user, options)

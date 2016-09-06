@@ -7,9 +7,11 @@ class WikiMacro < ActiveRecord::Base
 
     validates_presence_of :name, :description, :content
     validates_length_of :name, :in => 1..NAME_MAX_LENGTH
-    validates_format_of :name, :with => %r{^[a-z0-9_]+$}
+    validates_format_of :name, :with => %r{\A[a-z0-9_]+\z}
 
     validate :validate_name
+
+    attr_protected :id
 
     MACRO_ARGUMENT_RE = %r{%(url)?(?:\{([^{=}]*)\}|\[([0-9]*)\]|\((\**)\))}
 
@@ -80,10 +82,10 @@ class WikiMacro < ActiveRecord::Base
         named = {}
         unnamed = []
         args.each do |arg|
-            if arg =~ %r{^([^{=}]+)=(?:(['"])([^\2]*)\2|(.*))$}
+            if arg =~ %r{\A([^{=}]+)=(?:(['"])([^\2]*)\2|(.*))\z}
                 named[$1.downcase.to_sym] = $2 ? $3 : $4
             else
-                arg.gsub!(%r{^(['"])(.*)\1$}, '\\2')
+                arg.gsub!(%r{\A(['"])(.*)\1\z}, '\\2')
                 unnamed << arg
             end
         end

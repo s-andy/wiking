@@ -2,7 +2,8 @@ class Mention < ActiveRecord::Base
     belongs_to :mentioned, :class_name => 'User'
     belongs_to :mentioning, :polymorphic => true
 
-    before_save :set_created_on
+    before_save  :set_created_on
+    after_create :send_notification
 
     def set_created_on
         if mentioning.respond_to?(:mentioning_date)
@@ -12,6 +13,21 @@ class Mention < ActiveRecord::Base
         elsif mentioning.respond_to?(:created_on)
             self.created_on = mentioning.created_on
         end
+    end
+
+    def send_notification
+        if Setting.notified_events.include?('user_mentioned') &&
+           %w(all only_my_events only_owner).include?(mentioned.mail_notification) &&
+           title.present? && url.present? && created_on > 1.day.ago &&
+           (!mentioning.respond_to?(:visible?) || mentioning.visible?(mentioned))
+            if Rails::VERSION::MAJOR < 3
+                Mailer.deliver_mention(self)
+            else
+                Mailer.mention(self).deliver
+            end
+        end
+    rescue Exception => exception
+        Rails.logger.error exception.message
     end
 
     def class_name
