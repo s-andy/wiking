@@ -2,4 +2,27 @@ bg:
   permission_view_hidden_content: Разглеждане на скрито съдържание
 
   glyph_left_quote: „
-  glyph_right_quote: “
+  glyph_right_quote: ”
+  
+  label_custom_wiki_macro_plural: Потребителски Wiki макроси
+  label_custom_wiki_macro_new: Нов масрос
+
+  notice_custom_macro_edit: При редактиране на макрос помнете, че той вече може да се използва!
+
+  text_custom_wiki_macro_name_info: Позволени са само малки букви (a-z), числа и '_'.
+  text_custom_wiki_macro_desc_info: 'Wiki синтаксис се поддържа. Пример:'
+  text_custom_wiki_macro_desc_sample: Показва списък на всички налични макроси, включително и описанията, ако има такива.
+  text_custom_wiki_macro_content_info: 'HTML се поддържа. Синтаксис за аргументите:'
+  text_custom_wiki_macro_named_argument: '%{name} - наименуван аргумент се специфицира чрез: name=value.'
+  text_custom_wiki_macro_unnamed_argument: '%[1] - ненаименуван аргумент се специфицира само със стойност.'
+  text_custom_wiki_macro_body: '%(*) - тяло на макроса.'
+
+  label_mentions: Споменаване
+  label_user_mentions: Споменаване на %{value}
+  label_view_all_mentions: Показване на всички споменавания
+  label_total_number_of_mentions: Брой на споменаванията
+  label_user_mentioned: Потребителят е споменат
+
+  mail_subject_you_mentioned: Вие бяхте споменат 
+  mail_body_you_mentioned: Вие бяхте споменат в %{title}.
+  mail_body_check_mention: За да проверите споменаването отидете в
