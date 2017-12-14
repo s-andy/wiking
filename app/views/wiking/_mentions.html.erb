@@ -21,15 +21,9 @@ end %>
 
   <script type="text/javascript">
     //<![CDATA[
-    <% if defined? observe_field %>
-      var rightColumn = $('content').down('.splitcontentright');
-      var activityTabs = $('content').down('.tabs');
-      rightColumn.insert({ top: activityTabs.remove() });
-    <% else %>
-      var rightColumn = $('#content').find('.splitcontentright');
-      var activityTabs = $('#content').find('.tabs');
-      rightColumn.prepend(activityTabs.remove());
-    <% end %>
+    var rightColumn = $('#content').find('.splitcontentright');
+    var activityTabs = $('#content').find('.tabs');
+    rightColumn.prepend(activityTabs.remove());
     //]]>
   </script>
 <% end %>

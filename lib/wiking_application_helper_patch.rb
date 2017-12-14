@@ -11,7 +11,7 @@ module WikingApplicationHelperPatch
             unloadable
 
             alias_method_chain :textilizable,        :wiking
-            alias_method_chain :parse_headings,      :wiking unless Redmine::VERSION::MAJOR == 1 && Redmine::VERSION::MINOR == 0
+            alias_method_chain :parse_headings,      :wiking
             alias_method_chain :parse_wiki_links,    :wiking
             alias_method_chain :parse_redmine_links, :wiking
 
@@ -178,23 +178,6 @@ module WikingApplicationHelperPatch
 
             if object && !object.new_record? && object.changed.size == 0 && (controller_name rescue nil) != 'previews' && (action_name rescue nil) != 'preview'
                 update_mentions(object, @mentions)
-            end
-
-            if (!defined?(ChiliProject) || ChiliProject::VERSION::MAJOR < 3) && Redmine::VERSION::MAJOR == 1 && Redmine::VERSION::MINOR == 0 # For Redmine 1.0
-                case args.size
-                when 1
-                    obj = options[:object]
-                when 2
-                    obj = args.shift
-                    attr = args.shift
-                else
-                    return text
-                end
-                return text if text.blank?
-                project = options[:project] || @project || (obj && obj.respond_to?(:project) ? obj.project : nil)
-                only_path = options.delete(:only_path) == false ? false : true
-
-                parse_wiking_conditions(text, project, obj, attr, only_path, options)
             end
 
             text

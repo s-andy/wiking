@@ -22,11 +22,7 @@ class Mention < ActiveRecord::Base
            %w(all only_my_events only_owner).include?(mentioned.mail_notification) &&
            title.present? && url.present? && created_on > 1.day.ago &&
            (!mentioning.respond_to?(:visible?) || mentioning.visible?(mentioned))
-            if Rails::VERSION::MAJOR < 3
-                Mailer.deliver_mention(self)
-            else
-                Mailer.mention(self).deliver
-            end
+            Mailer.mention(self).deliver
         end
     rescue Exception => exception
         Rails.logger.error exception.message
