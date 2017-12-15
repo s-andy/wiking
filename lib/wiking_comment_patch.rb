@@ -4,6 +4,7 @@ module WikingCommentPatch
 
     def self.included(base)
         base.send(:include, InstanceMethods)
+        base.send(:include, VisibleMethod) unless base.method_defined?(:visible?)
         base.class_eval do
             unloadable
         end
@@ -57,6 +58,14 @@ module WikingCommentPatch
 
         def mentioning_description
             comments
+        end
+
+    end
+
+    module VisibleMethod
+
+        def visible?(user = User.current)
+            commented.visible?(user)
         end
 
     end

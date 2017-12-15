@@ -42,6 +42,9 @@ Rails.configuration.to_prepare do
     unless Comment.included_modules.include?(WikingCommentPatch)
         Comment.send(:include, WikingCommentPatch)
     end
+    unless Journal.included_modules.include?(WikingJournalPatch) || Journal.method_defined?(:visible?)
+        Journal.send(:include, WikingJournalPatch)
+    end
 
     unless Redmine::Notifiable.included_modules.include?(WikingNotifiablePatch)
         Redmine::Notifiable.send(:include, WikingNotifiablePatch)
