@@ -35,7 +35,11 @@ module WikingWikiHelperPatch
                 @wiking_heads_for_wiki_formatter_included = true
             end
 
-            help_url = "#{Redmine::Utils.relative_url_root}/help/#{current_language.to_s.downcase}/wiki_syntax.html" # FIXME _textile
+            if File.exists?(File.join(Rails.root, 'public/help', current_language.to_s.downcase, 'wiki_syntax_textile.html'))
+                help_url = "#{Redmine::Utils.relative_url_root}/help/#{current_language.to_s.downcase}/wiki_syntax_textile.html"
+            else
+                help_url = "#{Redmine::Utils.relative_url_root}/help/#{current_language.to_s.downcase}/wiki_syntax.html"
+            end
 
             if File.exists?(File.join(Rails.root, 'plugins/wiking/assets/help/', current_language.to_s.downcase, 'wiki_syntax.html'))
                 wiking_url = "#{Redmine::Utils.relative_url_root}/plugin_assets/wiking/help/#{current_language.to_s.downcase}/wiki_syntax.html"
