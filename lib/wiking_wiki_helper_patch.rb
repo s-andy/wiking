@@ -19,11 +19,9 @@ module WikingWikiHelperPatch
         def wikitoolbar_with_wiking_for(field_id)
             unless @heads_for_wiki_formatter_included
                 content_for :header_tags do
-                    wiki_heads = ''
-                    wiki_heads << javascript_include_tag('jstoolbar/jstoolbar-textile.min')
-                    wiki_heads << javascript_include_tag("jstoolbar/lang/jstoolbar-#{current_language.to_s.downcase}")
-                    wiki_heads << stylesheet_link_tag('jstoolbar')
-                    wiki_heads.html_safe
+                    javascript_include_tag('jstoolbar/jstoolbar-textile.min') +
+                    javascript_include_tag("jstoolbar/lang/jstoolbar-#{current_language.to_s.downcase}") +
+                    stylesheet_link_tag('jstoolbar')
                 end
                 @heads_for_wiki_formatter_included = true
             end

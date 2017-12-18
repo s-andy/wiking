@@ -7,10 +7,21 @@ ru:
   label_custom_wiki_macro_plural: Настраиваемые макросы Wiki
   label_custom_wiki_macro_new: Новый макрос
 
+  notice_custom_macro_edit: Редактируя макрос, помните, что он может уже использоваться!
+
+  text_custom_wiki_macro_name_info: Допускаются только строчные латинские буквы (a-z), цифры и подчеркивания.
+  text_custom_wiki_macro_desc_info: 'Поддерживается синтаксис Wiki. Пример:'
+  text_custom_wiki_macro_desc_sample: Отображает список всех доступных макросов, включая их описание, если доступно.
+  text_custom_wiki_macro_content_info: 'Поддерживается HTML. Синтаксис для аргументов:'
+  text_custom_wiki_macro_named_argument: '%{name} - названный аргумент, который указывается так: name=value.'
+  text_custom_wiki_macro_unnamed_argument: '%[1] - неназванный аргумент, указанный просто как значение.'
+  text_custom_wiki_macro_body: '%(*) - текстовое тело макроса.'
+
   label_mentions: Упоминания
   label_user_mentions: Упоминания %{value}
   label_view_all_mentions: Показать все упоминания
   label_total_number_of_mentions: Всего упоминаний
+  label_user_mentioned: Упомянут пользователь
 
   mail_subject_you_mentioned: Вас упомянули
   mail_body_you_mentioned: Вас упомянули в %{title}.

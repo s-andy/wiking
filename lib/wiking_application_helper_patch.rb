@@ -382,7 +382,7 @@ module WikingApplicationHelperPatch
 
         def link_to_user_with_login(user, options = {})
             if user.is_a?(User) && user.active? && user.login.match(%r{\A[a-z0-9_\-]+\z}i) && user.login != 'current'
-                link_to(h(user.name(options[:format])), :controller => 'users', :action => 'show', :id => user.login.downcase)
+                link_to(h(user.name(options[:format])), :controller => 'users', :action => 'show', :id => user.login.downcase, :class => user.css_classes)
             else
                 link_to_user_without_login(user, options)
             end
