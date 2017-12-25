@@ -27,6 +27,7 @@ div.wiking.warning {
 }
 div.wiking.notice {
     background-image: url(../images/notice.png);
+    background-repeat: no-repeat;
     background-color: #c5e7f8;
     border-color: #759fcf;
     color: #00365f;
