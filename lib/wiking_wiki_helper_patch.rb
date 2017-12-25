@@ -46,7 +46,7 @@ module WikingWikiHelperPatch
             end
 
             js_code = "var wikiToolbar = new jsToolBar(document.getElementById('#{field_id}'));"
-            js_code << "wikiToolbar.setMoreLink('#{escape_javascript(wiking_url)}');"
+            js_code << "if (typeof wikiToolbar.setMoreLink === 'function') { wikiToolbar.setMoreLink('#{escape_javascript(wiking_url)}'); }"
             js_code << "wikiToolbar.setHelpLink('#{escape_javascript(help_url)}');"
             js_code << "wikiToolbar.draw();"
 
