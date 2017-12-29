@@ -2,7 +2,7 @@
 
 <p class="warning"><%= l(:notice_custom_macro_edit) %></p>
 
-<%= form_for(@macro, :url => { :controller => 'macros', :action => 'update' }) do |f| %>
+<%= form_for(@macro, :url => { :controller => 'macros', :action => 'update' }, :builder => Redmine::Views::LabelledFormBuilder) do |f| %>
   <%= render(:partial => 'form', :locals => { :f => f }) %>
   <%= submit_tag(l(:button_save)) %>
 <% end %>

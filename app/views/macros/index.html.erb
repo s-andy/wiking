@@ -23,7 +23,7 @@
                                        :class => 'icon icon-edit') %>
         <%= link_to(l(:button_delete), { :controller => 'macros', :action => 'destroy', :id => macro },
                                          :method => :delete,
-                                         :confirm => l(:text_are_you_sure),
+                                         :data => { :confirm => l(:text_are_you_sure) },
                                          :class => 'icon icon-del') %>
       </td>
     </tr>

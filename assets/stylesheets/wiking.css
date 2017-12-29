@@ -15,7 +15,7 @@ span.wiking-hidden {
 }
 div.wiking.flash {
     border-width: 1px;
-    background-position: 6px 3px;
+    background-position: 6px 6px;
     width: auto;
     overflow-x: auto;
     overflow-y: hidden;
@@ -27,6 +27,7 @@ div.wiking.warning {
 }
 div.wiking.notice {
     background-image: url(../images/notice.png);
+    background-position: 6px 4px;
     background-repeat: no-repeat;
     background-color: #c5e7f8;
     border-color: #759fcf;
@@ -254,9 +255,6 @@ a:active.wiking.button {
 }
 .wiking.small {
     font-size: 0.75em;
-}
-dt.news-comments {
-    background-image: url(../images/news-comments.png);
 }
 .tab-content .contextual {
     margin-top: auto;

@@ -5,6 +5,9 @@ class WikiNGHook  < Redmine::Hook::ViewListener
         if File.exists?(File.join(File.dirname(__FILE__), "../assets/stylesheets/#{Setting.ui_theme}.css"))
             styles << stylesheet_link_tag(Setting.ui_theme, :plugin => 'wiking')
         end
+        if Redmine::VERSION::MAJOR < 3 || (Redmine::VERSION::MAJOR == 3 && Redmine::VERSION::MINOR < 4)
+            styles << stylesheet_link_tag('obsolete', :plugin => 'wiking')
+        end
         styles
     end
 
