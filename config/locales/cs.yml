@@ -1,0 +1,33 @@
+cs:
+  permission_view_hidden_content: Zobrazit skrytý obsah
+
+  glyph_left_quote: “
+  glyph_right_quote: ”
+
+  label_custom_wiki_macro_plural: Vlastní wiki makro
+  label_custom_wiki_macro_new: Nové makro
+
+  notice_custom_macro_edit: Při editaci makra nezapomeňte, že makro již může být používáno!
+
+  text_custom_wiki_macro_name_info: Pouze malá písmena (a-z), čísla a podtržítka jsou povolena.
+  text_custom_wiki_macro_desc_info: 'Wiki syntaxe je podporována. Příklad:'
+  text_custom_wiki_macro_desc_sample: Zobrazit všechna dostupná makra, včetně popisu pokud je dostupný.
+  text_custom_wiki_macro_content_info: 'HTML je podporováno, syntaxe pro argumenty:'
+  text_custom_wiki_macro_named_argument: '%{name} - použití pojmenovaných argumentů: name=value.'
+  text_custom_wiki_macro_unnamed_argument: '%[1] - nepojmenovaný argumet je specifikován hodnotou.'
+  text_custom_wiki_macro_body: '%(*) - tělo makra.'
+
+  label_mentions: Označení
+  label_user_mentions: Označení %{value}
+  label_view_all_mentions: Zobrazit všechna označení
+  label_total_number_of_mentions: Celkový počet označení
+  label_user_mentioned: Uživatel označen
+
+  mail_subject_you_mentioned: Byl jste označen
+  mail_body_you_mentioned: Byl jste označen v %{title}.
+  mail_body_check_mention: Pro kontrolu označení běžte na
+
+  label_wiki_content: Obsah wiki
+  label_watched_wiki_pages: Oblíbené stránky
+  label_wiki_overview_show: Zobrazit stránku vždy v bočním panelu
+  label_wiki_overview_pages: Výchozí stránky
