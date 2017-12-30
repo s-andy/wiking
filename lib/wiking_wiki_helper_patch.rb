@@ -9,7 +9,6 @@ module WikingWikiHelperPatch
             unloadable
 
             alias_method_chain :heads_for_wiki_formatter, :wiking
-            alias_method_chain :wikitoolbar_for,          :wiking
         end
     end
 
@@ -23,21 +22,17 @@ module WikingWikiHelperPatch
 
             unless @wiking_heads_for_wiki_formatter_included
                 content_for :header_tags do
-                    javascript_include_tag('wiking', :plugin => 'wiking')
+                    if File.exists?(File.join(Rails.root, 'plugins/wiking/assets/help/', current_language.to_s.downcase, 'wiki_syntax.html'))
+                        wiking_url = "#{Redmine::Utils.relative_url_root}/plugin_assets/wiking/help/#{current_language.to_s.downcase}/wiki_syntax.html"
+                    else
+                        wiking_url = "#{Redmine::Utils.relative_url_root}/plugin_assets/wiking/help/en/wiki_syntax.html"
+                    end
+
+                    javascript_include_tag('wiking', :plugin => 'wiking') +
+                    javascript_tag("jsToolBar.prototype.more_link = '#{escape_javascript(wiking_url)}';")
                 end
                 @wiking_heads_for_wiki_formatter_included = true
             end
-        end
-
-        def wikitoolbar_for_with_wiking(field_id)
-            if File.exists?(File.join(Rails.root, 'plugins/wiking/assets/help/', current_language.to_s.downcase, 'wiki_syntax.html'))
-                wiking_url = "#{Redmine::Utils.relative_url_root}/plugin_assets/wiking/help/#{current_language.to_s.downcase}/wiki_syntax.html"
-            else
-                wiking_url = "#{Redmine::Utils.relative_url_root}/plugin_assets/wiking/help/en/wiki_syntax.html"
-            end
-
-            javascript_tag("jsToolBar.prototype.more_link = '#{escape_javascript(wiking_url)}';") +
-            wikitoolbar_for_without_wiking(field_id)
         end
 
     end
