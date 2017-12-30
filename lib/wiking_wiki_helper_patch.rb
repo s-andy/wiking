@@ -7,7 +7,9 @@ module WikingWikiHelperPatch
         base.send(:include, InstanceMethods)
         base.class_eval do
             unloadable
-            alias_method :wikitoolbar_for, :wikitoolbar_with_wiking_for
+
+            alias_method_chain :heads_for_wiki_formatter, :wiking
+            alias_method_chain :wikitoolbar_for,          :wiking
         end
     end
 
@@ -16,15 +18,8 @@ module WikingWikiHelperPatch
 
     module InstanceMethods
 
-        def wikitoolbar_with_wiking_for(field_id)
-            unless @heads_for_wiki_formatter_included
-                content_for :header_tags do
-                    javascript_include_tag('jstoolbar/jstoolbar-textile.min') +
-                    javascript_include_tag("jstoolbar/lang/jstoolbar-#{current_language.to_s.downcase}") +
-                    stylesheet_link_tag('jstoolbar')
-                end
-                @heads_for_wiki_formatter_included = true
-            end
+        def heads_for_wiki_formatter_with_wiking
+            heads_for_wiki_formatter_without_wiking
 
             unless @wiking_heads_for_wiki_formatter_included
                 content_for :header_tags do
@@ -32,25 +27,17 @@ module WikingWikiHelperPatch
                 end
                 @wiking_heads_for_wiki_formatter_included = true
             end
+        end
 
-            if File.exists?(File.join(Rails.root, 'public/help', current_language.to_s.downcase, 'wiki_syntax_textile.html'))
-                help_url = "#{Redmine::Utils.relative_url_root}/help/#{current_language.to_s.downcase}/wiki_syntax_textile.html"
-            else
-                help_url = "#{Redmine::Utils.relative_url_root}/help/#{current_language.to_s.downcase}/wiki_syntax.html"
-            end
-
+        def wikitoolbar_for_with_wiking(field_id)
             if File.exists?(File.join(Rails.root, 'plugins/wiking/assets/help/', current_language.to_s.downcase, 'wiki_syntax.html'))
                 wiking_url = "#{Redmine::Utils.relative_url_root}/plugin_assets/wiking/help/#{current_language.to_s.downcase}/wiki_syntax.html"
             else
                 wiking_url = "#{Redmine::Utils.relative_url_root}/plugin_assets/wiking/help/en/wiki_syntax.html"
             end
 
-            js_code = "var wikiToolbar = new jsToolBar(document.getElementById('#{field_id}'));"
-            js_code << "if (typeof wikiToolbar.setMoreLink === 'function') { wikiToolbar.setMoreLink('#{escape_javascript(wiking_url)}'); }"
-            js_code << "wikiToolbar.setHelpLink('#{escape_javascript(help_url)}');"
-            js_code << "wikiToolbar.draw();"
-
-            javascript_tag(js_code)
+            javascript_tag("jsToolBar.prototype.more_link = '#{escape_javascript(wiking_url)}';") +
+            wikitoolbar_for_without_wiking(field_id)
         end
 
     end

@@ -1,7 +1,3 @@
-jsToolBar.prototype.setMoreLink = function(link) {
-    this.more_link = link;
-};
-
 jsToolBar.prototype.elements.more = {
     type: 'button',
     title: 'More',
