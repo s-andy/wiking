@@ -1,0 +1,40 @@
+$('#<%= field_id %>').textcomplete([{
+  match: /(^|\s)((user[#:]|@)([A-Za-z0-9\-_\.]*))$/,
+  search: function (term, callback, match) {
+    var self = this;
+    var params = {
+      q: match[4],
+      c: match[3].charAt(match[3].length - 1)
+    };
+    <% object = @issue || @message || @news %>
+    <% if object && !object.new_record? %>
+      params.object_type = '<%= object.class.name.underscore %>';
+      params.object_id = <%= object.id.to_i %>;
+    <% end %>
+    <% if @project && !@project.new_record? %>
+      params.project_id = <%= @project.id.to_i %>;
+    <% end %>
+    if ((match[4].length > 0) || params.object_id || params.project_id) {
+      $.getJSON('<%= autocomplete_mentions_path %>', params)
+       .done(function (resp) {
+         self.searchResults = resp;
+         callback($.map(resp, function (value, key) { return key }));
+       })
+       .fail(function () {
+         callback([]);
+       });
+    }
+    callback([], true);
+  },
+  template: function (value) {
+    item = '';
+    if (this.searchResults[value].avatar) {
+      item += '<img src="' + this.searchResults[value].avatar + '" width="14" height="14" class="gravatar"> ';
+    }
+    item += '<span>' + this.searchResults[value].name + '</span>';
+    return item;
+  },
+  replace: function (word) {
+    return '$1' + word;
+  }
+}], { debounce: 500 });

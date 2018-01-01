@@ -75,3 +75,22 @@ div.footnotes p.footnote > sup {
 div.footnotes p.footnote > sup:after {
     content: " — ";
 }
+ul.textcomplete-dropdown {
+    -moz-box-shadow: 1px 3px 5px #b4b4b4;
+    box-shadow: 1px 3px 5px #b4b4b4;
+    background-color: white;
+    font-size: 9pt;
+    color: #555;
+}
+ul.textcomplete-dropdown li.textcomplete-item.active {
+    background-color: #536A3F;
+}
+ul.textcomplete-dropdown li.textcomplete-item.active a {
+    color: #fff;
+}
+ul.textcomplete-dropdown img.gravatar {
+    -moz-box-shadow: unset;
+    box-shadow: unset;
+    border: none;
+    padding: 0;
+}

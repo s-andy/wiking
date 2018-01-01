@@ -1,7 +1,8 @@
 class MentionsController < ApplicationController
     include ApplicationHelper
 
-    before_filter :find_user
+    before_filter :find_user,               :only => :index
+    before_filter :find_object_and_project, :only => :autocomplete
 
     def index
         count = 0
@@ -32,6 +33,38 @@ class MentionsController < ApplicationController
         end
     end
 
+    def autocomplete
+        if params[:q].blank?
+            if @object.is_a?(Issue)
+                @users = []
+                @users << @object.author if @object.author
+                @users += @object.assigned_to.is_a?(Group) ? @object.assigned_to.users : [ @object.assigned_to ] if @object.assigned_to
+                @users += @object.journals.collect{ |journal| journal.user }
+                @users.sort!.uniq!
+            elsif @object.is_a?(Message)
+                @users = []
+                @users << @object.author
+                @users += @object.children.collect{ |reply| reply.author }
+                @users.sort!.uniq!
+            elsif @object.is_a?(News)
+                @users = []
+                @users << @object.author
+                @users += @object.comments.collect{ |comment| comment.author }
+                @users.sort!.uniq!
+            elsif @project
+                @users = @project.members.sort.uniq.collect{ |member| member.user }
+            else
+                @users = []
+            end
+        end
+        if @users.nil?
+            conditions = %w(login firstname lastname).map{ |column| "LOWER(#{User.table_name}.#{column}) LIKE LOWER(:q)" }
+            conditions << "#{User.table_name}.id LIKE :q" if params[:c] == '#'
+            @users = User.active.visible.sorted.where(conditions.join(' OR '), { :q => "#{params[:q]}%" }).limit(10)
+        end
+        render(:layout => false, :locals => { :c => params[:c] })
+    end
+
 private
 
     # A copy of #find_user in UsersController
@@ -46,4 +79,16 @@ private
         render_404
     end
 
+    def find_object_and_project
+        if params[:object_type] && params[:object_id]
+            klass = Object.const_get(params[:object_type].camelcase) rescue nil
+            if klass
+                @object = klass.find(params[:object_id])
+                raise Unauthorized if @object && @object.respond_to?(:visible?) && !@object.visible?
+            end
+        end
+        if params[:project_id]
+            @project = Project.visible.find_by_param(params[:project_id])
+        end
+    end
 end

@@ -1,0 +1,25 @@
+<%= raw @users.inject({}) { |hash, user|
+  if c == '@' && user.login.match(%r{\A[a-z0-9_\-\.]+\z}i)
+    user_id = '@' + user.login
+  elsif c == ':' && user.login.match(%r{\A[a-z0-9_\-]+\z}i)
+    user_id = 'user:' + user.login
+  else
+    user_id = 'user#' + user.id.to_s
+  end
+
+  hash[user_id] = {
+    :id   => user.id,
+    :name => user.name
+  }
+
+  if Setting.gravatar_enabled?
+    if user.respond_to?(:mail)
+      user_email = user.mail
+    elsif user.to_s =~ %r{<(.+?)>}
+      user_email = $1
+    end
+    hash[user_id][:avatar] = gravatar_url(user_email.to_s.downcase, :size => 14, :default => Setting.gravatar_default)
+  end
+
+  hash
+}.to_json %>

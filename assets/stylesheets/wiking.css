@@ -266,3 +266,24 @@ a:active.wiking.button {
     padding-left: 210px;
     margin: 0;
 }
+ul.textcomplete-dropdown {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+ul.textcomplete-dropdown li.textcomplete-item {
+    padding: 3px 1em 3px 0.4em;
+    cursor: pointer;
+}
+ul.textcomplete-dropdown li.textcomplete-item.active {
+    background-color: #eef5fd;
+}
+ul.textcomplete-dropdown li.textcomplete-item a {
+    text-decoration: none;
+    color: #333;
+}
+ul.textcomplete-dropdown li.textcomplete-item.active a {
+    color: #628db6;
+}

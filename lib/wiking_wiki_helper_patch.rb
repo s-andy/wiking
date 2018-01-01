@@ -9,6 +9,7 @@ module WikingWikiHelperPatch
             unloadable
 
             alias_method_chain :heads_for_wiki_formatter, :wiking
+            alias_method_chain :wikitoolbar_for,          :wiking
         end
     end
 
@@ -29,10 +30,16 @@ module WikingWikiHelperPatch
                     end
 
                     javascript_include_tag('wiking', :plugin => 'wiking') +
+                    javascript_include_tag('dist/jquery.textcomplete.min', :plugin => 'wiking') +
                     javascript_tag("jsToolBar.prototype.more_link = '#{escape_javascript(wiking_url)}';")
                 end
                 @wiking_heads_for_wiki_formatter_included = true
             end
+        end
+
+        def wikitoolbar_for_with_wiking(field_id)
+            wikitoolbar_for_without_wiking(field_id) +
+            javascript_tag(render(:partial => 'autocomplete/wiking.js', :locals => { :field_id => field_id }))
         end
 
     end
