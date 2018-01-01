@@ -1,3 +1,4 @@
+<% debounce = Setting.plugin_wiking[:autocomplete_debounce].to_i %>
 $('#<%= field_id %>').textcomplete([{
   match: /(^|\s)((user[#:]|@)([A-Za-z0-9\-_\.]*))$/,
   search: function (term, callback, match) {
@@ -37,4 +38,4 @@ $('#<%= field_id %>').textcomplete([{
   replace: function (word) {
     return '$1' + word;
   }
-}], { debounce: 500 });
+}], { debounce: <%= (debounce > 0) ? debounce : 'undefined' %> });

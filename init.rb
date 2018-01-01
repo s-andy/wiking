@@ -71,6 +71,10 @@ Redmine::Plugin.register :wiking do
                       :caption => :label_custom_wiki_macro_plural,
                       :html => { :class => 'icon icon-custom-macros' },
                       :after => :custom_fields
+
+    settings :default => {
+        :autocomplete_debounce => 500
+    }, :partial => 'settings/wiking'
 end
 
 Redmine::WikiFormatting::Macros.register do

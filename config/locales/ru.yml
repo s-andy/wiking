@@ -26,3 +26,6 @@ ru:
   mail_subject_you_mentioned: Вас упомянули
   mail_body_you_mentioned: Вас упомянули в %{title}.
   mail_body_check_mention: Чтобы проверить упоминание перейдите по ссылке
+
+  label_autocomplete_debounce: Задержка для автозавершения упоминаний
+  label_ms: мс

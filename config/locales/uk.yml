@@ -26,3 +26,6 @@ ru:
   mail_subject_you_mentioned: Вас згадали
   mail_body_you_mentioned: Вас згадали в %{title}.
   mail_body_check_mention: Щоб переглянути згадку перейдіть за посиланням
+
+  label_autocomplete_debounce: Затримка для автозавершення згадок
+  label_ms: мс

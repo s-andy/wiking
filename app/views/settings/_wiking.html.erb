@@ -1,0 +1,5 @@
+<p>
+  <%= label_tag('settings[autocomplete_debounce]', l(:label_autocomplete_debounce)) %>
+  <%= text_field_tag('settings[autocomplete_debounce]', @settings[:autocomplete_debounce], :size => 5) %>
+  <%= l(:label_ms) %>
+</p>

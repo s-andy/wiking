@@ -26,3 +26,6 @@ en:
   mail_subject_you_mentioned: You have been mentioned
   mail_body_you_mentioned: You have been mentioned in %{title}.
   mail_body_check_mention: To check the mention go to
+
+  label_autocomplete_debounce: Debounce for user mention autocomplete
+  label_ms: ms
