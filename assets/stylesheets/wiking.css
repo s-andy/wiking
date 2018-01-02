@@ -60,21 +60,25 @@ span.wiking.marker-super {
 }
 span.wiking.marker-todo {
     background-image: url(../images/todo.png);
+    vertical-align: middle;
     width: 34px;
     height: 14px;
 }
 span.wiking.marker-fixme {
     background-image: url(../images/fixme.png);
+    vertical-align: middle;
     width: 38px;
     height: 14px;
 }
 span.wiking.marker-update {
     background-image: url(../images/update.png);
+    vertical-align: middle;
     width: 46px;
     height: 14px;
 }
 span.wiking.marker-new {
     background-image: url(../images/new-text.png);
+    vertical-align: middle;
     width: 23px;
     height: 11px;
 }
@@ -123,6 +127,7 @@ span.wiking.marker-beta {
 }
 span.wiking.smiley {
     background-repeat: no-repeat;
+    vertical-align: middle;
     display: inline-block;
     width: 16px;
     height: 16px;
