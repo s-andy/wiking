@@ -60,18 +60,18 @@ span.wiking.marker-super {
 }
 span.wiking.marker-todo {
     background-image: url(../images/todo.png);
-    width: 72px;
-    height: 20px;
+    width: 34px;
+    height: 14px;
 }
 span.wiking.marker-fixme {
     background-image: url(../images/fixme.png);
-    width: 77px;
-    height: 20px;
+    width: 38px;
+    height: 14px;
 }
 span.wiking.marker-update {
     background-image: url(../images/update.png);
-    width: 87px;
-    height: 20px;
+    width: 46px;
+    height: 14px;
 }
 span.wiking.marker-new {
     background-image: url(../images/new-text.png);
