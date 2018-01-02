@@ -30,7 +30,7 @@ module WikingWikiHelperPatch
                     end
 
                     javascript_include_tag('wiking', :plugin => 'wiking') +
-                    javascript_include_tag('dist/jquery.textcomplete.min', :plugin => 'wiking') +
+                    javascript_include_tag('jquery.textcomplete.min', :plugin => 'wiking') +
                     javascript_tag("jsToolBar.prototype.more_link = '#{escape_javascript(wiking_url)}';")
                 end
                 @wiking_heads_for_wiki_formatter_included = true
