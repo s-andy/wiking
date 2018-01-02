@@ -60,7 +60,9 @@ class MentionsController < ApplicationController
         if @users.nil?
             conditions = %w(login firstname lastname).map{ |column| "LOWER(#{User.table_name}.#{column}) LIKE LOWER(:q)" }
             conditions << "#{User.table_name}.id LIKE :q" if params[:c] == '#'
-            @users = User.active.visible.sorted.where(conditions.join(' OR '), { :q => "#{params[:q]}%" }).limit(10)
+            scope = User.active
+            scope = scope.visible if scope.respond_to?(:visible)
+            @users = scope.sorted.where(conditions.join(' OR '), { :q => "#{params[:q]}%" }).limit(10)
         end
         render(:layout => false, :locals => { :c => params[:c] })
     end

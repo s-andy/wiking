@@ -57,7 +57,7 @@ class WikiMacro < ActiveRecord::Base
     end
 
     def update_description!
-        Redmine::WikiFormatting::Macros.available_macros[name.to_sym][:desc] = description # FIXME some macros are not there
+        Redmine::WikiFormatting::Macros.available_macros[name.to_sym][:desc] = description
     end
 
     def unregister!
