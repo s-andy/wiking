@@ -2,8 +2,6 @@ class Mention < ActiveRecord::Base
     belongs_to :mentioned, :class_name => 'User'
     belongs_to :mentioning, :polymorphic => true
 
-    attr_protected :id
-
     before_save  :set_created_on
     after_create :send_notification
 

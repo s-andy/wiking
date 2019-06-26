@@ -9,17 +9,17 @@ Rails.configuration.to_prepare do
         Redmine::WikiFormatting::Textile::Formatter.send(:include, WikingFormatterPatch)
     end
     unless Redmine::WikiFormatting::Textile::Helper.included_modules.include?(WikingWikiHelperPatch)
-        Redmine::WikiFormatting::Textile::Helper.send(:include, WikingWikiHelperPatch)
+        Redmine::WikiFormatting::Textile::Helper.send(:prepend, WikingWikiHelperPatch)
     end
     unless Redmine::WikiFormatting::Macros::Definitions.included_modules.include?(WikingMacrosDefinitionsPatch)
-        Redmine::WikiFormatting::Macros::Definitions.send(:include, WikingMacrosDefinitionsPatch)
+        Redmine::WikiFormatting::Macros::Definitions.send(:prepend, WikingMacrosDefinitionsPatch)
     end
     unless ApplicationHelper.included_modules.include?(WikingApplicationHelperPatch)
-        ApplicationHelper.send(:include, WikingApplicationHelperPatch)
+        ApplicationHelper.send(:prepend, WikingApplicationHelperPatch)
     end
 
     unless Redmine::Export::PDF::ITCPDF.included_modules.include?(WikingPDFPatch)
-        Redmine::Export::PDF::ITCPDF.send(:include, WikingPDFPatch)
+        Redmine::Export::PDF::ITCPDF.send(:prepend, WikingPDFPatch)
     end
 
     unless JournalsController.included_modules.include?(WikingLlControllerPatch)
@@ -47,7 +47,7 @@ Rails.configuration.to_prepare do
     end
 
     unless Redmine::Notifiable.included_modules.include?(WikingNotifiablePatch)
-        Redmine::Notifiable.send(:include, WikingNotifiablePatch)
+        Redmine::Notifiable.send(:prepend, WikingNotifiablePatch)
     end
     unless Mailer.included_modules.include?(WikingMailerPatch)
         Mailer.send(:include, WikingMailerPatch)
