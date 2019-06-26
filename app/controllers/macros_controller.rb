@@ -2,8 +2,8 @@ class MacrosController < ApplicationController
     layout 'admin'
     menu_item :custom_macros
 
-    before_filter :require_admin
-    before_filter :find_macro, :only => [ :edit, :update, :destroy ]
+    before_action :require_admin
+    before_action :find_macro, :only => [ :edit, :update, :destroy ]
 
     def index
         @macros = WikiMacro.order(:name)
