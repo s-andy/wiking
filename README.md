@@ -33,3 +33,4 @@ Note, that this can be a development snapshot (i.e., not a stable version)!
 - Documentation: http://projects.andriylesyuk.com/projects/wiking/wiki
 - Syntax: http://projects.andriylesyuk.com/projects/wiking/wiki/Syntax
 - Redmine plugin page: http://www.redmine.org/plugins/wiking
+ 
