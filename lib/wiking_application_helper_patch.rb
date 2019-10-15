@@ -248,7 +248,7 @@ module WikingApplicationHelperPatch
               (?:(?<sep1>\#)(?<identifier1>\d+)|(?<sep2>:)(?<identifier2>[^"\s<>][^\s<>]*?|"[^"]+?"))
             )|(
               (?<sep3>@)
-              (?<identifier3>[a-z0-9\-_\.]+)
+              (?<identifier3>[a-zA-Z0-9_\-\.]*[a-zA-Z0-9])
             ))
             (?=(?=[[:punct:]]\W)|,|\s|\]|<|\z)
         }x
