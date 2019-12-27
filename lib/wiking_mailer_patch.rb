@@ -3,10 +3,40 @@ require_dependency 'mailer'
 module WikingMailerPatch
 
     def self.included(base)
+        base.extend(ClassMethods)
         base.send(:include, InstanceMethods)
         base.class_eval do
             unloadable
+
+            class << self
+                alias_method_chain :deliver_issue_add,  :mentions
+                alias_method_chain :deliver_issue_edit, :mentions
+            end
         end
+    end
+
+    module ClassMethods
+
+        def deliver_issue_add_with_mentions(issue)
+            begin
+                view_context_class.new.textilizable(issue, :description)
+            rescue
+            end
+
+            deliver_issue_add_without_mentions(issue)
+        end
+
+        def deliver_issue_edit_with_mentions(journal)
+            if journal.notes?
+                begin
+                    view_context_class.new.textilizable(journal, :notes)
+                rescue
+                end
+            end
+
+            deliver_issue_edit_without_mentions(journal)
+        end
+
     end
 
     module InstanceMethods

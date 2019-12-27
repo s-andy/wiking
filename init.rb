@@ -42,7 +42,7 @@ Rails.configuration.to_prepare do
     unless Comment.included_modules.include?(WikingCommentPatch)
         Comment.send(:include, WikingCommentPatch)
     end
-    unless Journal.included_modules.include?(WikingJournalPatch) || Journal.method_defined?(:visible?)
+    unless Journal.included_modules.include?(WikingJournalPatch)
         Journal.send(:include, WikingJournalPatch)
     end
 
@@ -51,6 +51,12 @@ Rails.configuration.to_prepare do
     end
     unless Mailer.included_modules.include?(WikingMailerPatch)
         Mailer.send(:include, WikingMailerPatch)
+    end
+
+    for model in [ Issue, Journal ]
+        unless Issue.included_modules.include?(WikingNotifiedUsersPatch)
+            Issue.send(:include, WikingNotifiedUsersPatch)
+        end
     end
 end
 

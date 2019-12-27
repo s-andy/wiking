@@ -22,6 +22,8 @@ class Mention < ActiveRecord::Base
            %w(all only_my_events only_owner).include?(mentioned.mail_notification) &&
            title.present? && url.present? && created_on > 1.day.ago &&
            (!mentioning.respond_to?(:visible?) || mentioning.visible?(mentioned))
+            return if mentioning.respond_to?(:notified_users) && mentioning.notified_users.include?(mentioned)
+            return if mentioning.respond_to?(:notified_watchers) && mentioning.notified_watchers.include?(mentioned)
             Mailer.mention(self).deliver
         end
     rescue Exception => exception
