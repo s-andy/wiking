@@ -248,7 +248,7 @@ module WikingApplicationHelperPatch
               (?:(?<sep1>\#)(?<identifier1>\d+)|(?<sep2>:)(?<identifier2>[^"\s<>][^\s<>]*?|"[^"]+?"))
             )|(
               (?<sep3>@)
-              (?<identifier3>[a-z0-9\-_\.]+)
+              (?<identifier3>[a-zA-Z0-9_\-\.]*[a-zA-Z0-9])
             ))
             (?=(?=[[:punct:]]\W)|,|\s|\]|<|\z)
         }x
@@ -416,7 +416,12 @@ module WikingApplicationHelperPatch
 
         def link_to_user_with_login(user, options = {})
             if user.is_a?(User) && user.active? && user.login.match(%r{\A[a-z0-9_\-]+\z}i) && user.login != 'current'
-                link_to(h(user.name(options[:format])), { :controller => 'users', :action => 'show', :id => user.login.downcase }, :class => user.css_classes)
+                name = h(user.name(options[:format]))
+                if Redmine::Plugin.installed?(:redmine_people) && User.current.allowed_people_to?(:view_people, user)
+                    link_to(name, { :controller => 'people', :action => 'show', :id => user.login.downcase }, :class => user.css_classes)
+                else
+                    link_to(name, { :controller => 'users', :action => 'show', :id => user.login.downcase }, :class => user.css_classes)
+                end
             else
                 link_to_user_without_login(user, options)
             end
