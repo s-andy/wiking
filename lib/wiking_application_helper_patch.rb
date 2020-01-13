@@ -4,18 +4,21 @@ require_dependency 'application_helper'
 
 module WikingApplicationHelperPatch
 
-    def self.included(base)
-        base.extend(ClassMethods)
-        base.send(:include, InstanceMethods)
+    def self.prepended(base)
+        base.prepend(ClassMethods)
+        base.send(:prepend, InstanceMethods)
         base.class_eval do
             unloadable
 
-            alias_method_chain :textilizable,        :wiking
-            alias_method_chain :parse_headings,      :wiking
-            alias_method_chain :parse_wiki_links,    :wiking
-            alias_method_chain :parse_redmine_links, :wiking
+            # alias_method_chain :parse_headings,      :wiking
+            alias_method :textilizable_without_wiking, :textilizable
+            alias_method :textilizable, :textilizable_with_wiking
+            alias_method :parse_wiki_links_without_wiking, :parse_wiki_links
+            alias_method :parse_wiki_links, :parse_wiki_links_with_wiking
+            alias_method :parse_redmine_links_without_wiking, :parse_redmine_links
+            alias_method :parse_redmine_links, :parse_redmine_links_with_wiking
 
-            alias_method_chain :link_to_user, :login
+            # alias_method_chain :link_to_user, :login
 
             define_method :parse_wiking_conditions, instance_method(:parse_wiking_conditions)
             define_method :parse_glyphs,            instance_method(:parse_glyphs)
@@ -185,11 +188,11 @@ module WikingApplicationHelperPatch
             text
         end
 
-        def parse_headings_with_wiking(text, project, obj, attr, only_path, options)
+        def parse_headings(text, project, obj, attr, only_path, options)
             parse_wiking_conditions(text, project, obj, attr, only_path, options)
             parse_glyphs(text, project, obj, attr, only_path, options)
 
-            parse_headings_without_wiking(text, project, obj, attr, only_path, options)
+            super(text, project, obj, attr, only_path, options)
 
             parse_footnotes(text, project, obj, attr, only_path, options)
         end
@@ -414,7 +417,7 @@ module WikingApplicationHelperPatch
             end
         end
 
-        def link_to_user_with_login(user, options = {})
+        def link_to_user(user, options = {})
             if user.is_a?(User) && user.active? && user.login.match(%r{\A[a-z0-9_\-]+\z}i) && user.login != 'current'
                 name = h(user.name(options[:format]))
                 if Redmine::Plugin.installed?(:redmine_people) && User.current.allowed_people_to?(:view_people, user)
@@ -423,7 +426,7 @@ module WikingApplicationHelperPatch
                     link_to(name, { :controller => 'users', :action => 'show', :id => user.login.downcase }, :class => user.css_classes)
                 end
             else
-                link_to_user_without_login(user, options)
+                super(user, options)
             end
         end
 

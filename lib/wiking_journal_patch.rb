@@ -2,8 +2,8 @@ require_dependency 'journal'
 
 module WikingJournalPatch
 
-    def self.included(base)
-        base.send(:include, VisibleMethod) unless base.method_defined?(:visible?)
+    def self.prepended(base)
+        base.send(:prepend, VisibleMethod) unless base.method_defined?(:visible?)
         base.class_eval do
             unloadable
         end

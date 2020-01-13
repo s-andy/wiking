@@ -2,9 +2,9 @@ require_dependency 'redmine/wiki_formatting/textile/formatter'
 
 module WikingFormatterPatch
 
-    def self.included(base)
-        base.extend(ClassMethods)
-        base.send(:include, InstanceMethods)
+    def self.prepended(base)
+        base.prepend(ClassMethods)
+        base.send(:prepend, InstanceMethods)
         base.class_eval do
             include Redmine::I18n
 

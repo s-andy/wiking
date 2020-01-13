@@ -6,56 +6,56 @@ Rails.logger.info 'Starting WikiNG Plugin for Redmine'
 
 Rails.configuration.to_prepare do
     unless Redmine::WikiFormatting::Textile::Formatter.included_modules.include?(WikingFormatterPatch)
-        Redmine::WikiFormatting::Textile::Formatter.send(:include, WikingFormatterPatch)
+        Redmine::WikiFormatting::Textile::Formatter.send(:prepend, WikingFormatterPatch)
     end
     unless Redmine::WikiFormatting::Textile::Helper.included_modules.include?(WikingWikiHelperPatch)
-        Redmine::WikiFormatting::Textile::Helper.send(:include, WikingWikiHelperPatch)
+        Redmine::WikiFormatting::Textile::Helper.send(:prepend, WikingWikiHelperPatch)
     end
     unless Redmine::WikiFormatting::Macros::Definitions.included_modules.include?(WikingMacrosDefinitionsPatch)
-        Redmine::WikiFormatting::Macros::Definitions.send(:include, WikingMacrosDefinitionsPatch)
+        Redmine::WikiFormatting::Macros::Definitions.send(:prepend, WikingMacrosDefinitionsPatch)
     end
     unless ApplicationHelper.included_modules.include?(WikingApplicationHelperPatch)
-        ApplicationHelper.send(:include, WikingApplicationHelperPatch)
+        ApplicationHelper.send(:prepend, WikingApplicationHelperPatch)
     end
 
     unless Redmine::Export::PDF::ITCPDF.included_modules.include?(WikingPDFPatch)
-        Redmine::Export::PDF::ITCPDF.send(:include, WikingPDFPatch)
+        Redmine::Export::PDF::ITCPDF.send(:prepend, WikingPDFPatch)
     end
 
     unless JournalsController.included_modules.include?(WikingLlControllerPatch)
-        JournalsController.send(:include, WikingLlControllerPatch)
+        JournalsController.send(:prepend, WikingLlControllerPatch)
     end
     unless MessagesController.included_modules.include?(WikingLlControllerPatch)
-        MessagesController.send(:include, WikingLlControllerPatch)
+        MessagesController.send(:prepend, WikingLlControllerPatch)
     end
     unless CommentsController.included_modules.include?(WikingCommentsControllerPatch)
-        CommentsController.send(:include, WikingCommentsControllerPatch)
+        CommentsController.send(:prepend, WikingCommentsControllerPatch)
     end
 
     unless User.included_modules.include?(WikingUserPatch)
-        User.send(:include, WikingUserPatch)
+        User.send(:prepend, WikingUserPatch)
     end
 
     unless WikiContent.included_modules.include?(WikingContentPatch)
-        WikiContent.send(:include, WikingContentPatch)
+        WikiContent.send(:prepend, WikingContentPatch)
     end
     unless Comment.included_modules.include?(WikingCommentPatch)
-        Comment.send(:include, WikingCommentPatch)
+        Comment.send(:prepend, WikingCommentPatch)
     end
     unless Journal.included_modules.include?(WikingJournalPatch)
-        Journal.send(:include, WikingJournalPatch)
+        Journal.send(:prepend, WikingJournalPatch)
     end
 
     unless Redmine::Notifiable.included_modules.include?(WikingNotifiablePatch)
-        Redmine::Notifiable.send(:include, WikingNotifiablePatch)
+        Redmine::Notifiable.send(:prepend, WikingNotifiablePatch)
     end
     unless Mailer.included_modules.include?(WikingMailerPatch)
-        Mailer.send(:include, WikingMailerPatch)
+        Mailer.send(:prepend, WikingMailerPatch)
     end
 
     for model in [ Issue, Journal ]
         unless Issue.included_modules.include?(WikingNotifiedUsersPatch)
-            Issue.send(:include, WikingNotifiedUsersPatch)
+            Issue.send(:prepend, WikingNotifiedUsersPatch)
         end
     end
 end

@@ -2,8 +2,8 @@ require_dependency 'user'
 
 module WikingUserPatch
 
-    def self.included(base)
-        base.extend(ClassMethods)
+    def self.prepended(base)
+        base.prepend(ClassMethods)
         base.class_eval do
             unloadable
         end
