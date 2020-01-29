@@ -3,8 +3,8 @@ require_dependency 'messages_controller'
 
 module WikingLlControllerPatch
 
-    def self.included(base)
-        base.send(:include, InstanceMethods)
+    def self.prepended(base)
+        base.send(:prepend, InstanceMethods)
         base.class_eval do
             unloadable
         end

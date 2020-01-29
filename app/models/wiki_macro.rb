@@ -11,8 +11,6 @@ class WikiMacro < ActiveRecord::Base
 
     validate :validate_name
 
-    attr_protected :id
-
     MACRO_ARGUMENT_RE = %r{%(url)?(?:\{([^{=}]*)\}|\[([0-9]*)\]|\((\**)\))}
 
     def to_s

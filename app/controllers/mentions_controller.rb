@@ -1,8 +1,8 @@
 class MentionsController < ApplicationController
     include ApplicationHelper
 
-    before_filter :find_user,               :only => :index
-    before_filter :find_object_and_project, :only => :autocomplete
+    before_action :find_user,               :only => :index
+    before_action :find_object_and_project, :only => :autocomplete
 
     def index
         count = 0

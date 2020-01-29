@@ -2,9 +2,9 @@ require_dependency 'comment'
 
 module WikingCommentPatch
 
-    def self.included(base)
-        base.send(:include, InstanceMethods)
-        base.send(:include, VisibleMethod) unless base.method_defined?(:visible?)
+    def self.prepended(base)
+        base.send(:prepend, InstanceMethods)
+        base.send(:prepend, VisibleMethod) unless base.method_defined?(:visible?)
         base.class_eval do
             unloadable
         end

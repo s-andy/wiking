@@ -2,8 +2,8 @@ require_dependency 'wiki_content'
 
 module WikingContentPatch
 
-    def self.included(base)
-        base.send(:include, InstanceMethods)
+    def self.prepended(base)
+        base.send(:prepend, InstanceMethods)
         base.class_eval do
             unloadable
         end

@@ -13,13 +13,19 @@ span.wiking-hidden {
     opacity: 0.25;
     filter: alpha(opacity=25);
 }
+div.wiking {
+    background-repeat: no-repeat;
+}
 div.wiking.flash {
-    border-width: 1px;
     background-position: 6px 6px;
     width: auto;
     overflow-x: auto;
     overflow-y: hidden;
-    font-size: 10pt;
+    font-size: 1.1em;
+    padding: 6px 4px 6px 30px;
+    margin-bottom: 12px;
+    border: 1px solid;
+    border-radius: 3px
 }
 div.wiking.warning {
     background-image: url(../images/warning.png);
@@ -28,19 +34,16 @@ div.wiking.warning {
 div.wiking.notice {
     background-image: url(../images/notice.png);
     background-position: 6px 4px;
-    background-repeat: no-repeat;
     background-color: #c5e7f8;
     border-color: #759fcf;
     color: #00365f;
 }
 div.wiking.tip {
     background-image: url(../images/tip.png);
-    background-repeat: no-repeat;
     background-color: #eee;
     border-color: #bbb;
 }
 span.wiking.marker {
-    background-repeat: no-repeat;
     display: inline-block;
 }
 span.wiking.marker-left,
