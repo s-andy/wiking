@@ -58,13 +58,19 @@ class MentionsController < ApplicationController
             end
         end
         if @users.nil?
-            conditions = %w(login firstname lastname).map{ |column| "LOWER(#{User.table_name}.#{column}) LIKE LOWER(:q)" }
-            conditions << "#{User.table_name}.id LIKE :q" if params[:c] == '#'
             scope = User.active
             scope = scope.visible if scope.respond_to?(:visible)
-            @users = scope.sorted.where(conditions.join(' OR '), { :q => "#{params[:q]}%" }).limit(10)
+            conditions = %w(login firstname lastname).map{ |column| "LOWER(#{User.table_name}.#{column}) LIKE LOWER(:q)" }
+            conditions << "#{User.table_name}.id LIKE :q" if params[:c] == '#'
+            if (nickname_custom_field_id = Setting.plugin_wiking['nickname_custom_field'].to_i) > 0
+                scope = scope.joins("LEFT JOIN #{CustomValue.table_name} ON #{CustomValue.table_name}.customized_type = '#{Principal.name}' AND " +
+                                                                      "#{CustomValue.table_name}.customized_id = #{Principal.table_name}.id AND " +
+                                                                      "#{CustomValue.table_name}.custom_field_id = #{nickname_custom_field_id} AND #{CustomValue.table_name}.value <> ''")
+                conditions << "LOWER(#{CustomValue.table_name}.value) LIKE LOWER(:q)"
+            end
+            @users = scope.sorted.where(conditions.join(' OR '), :q => "#{params[:q]}%").limit(10)
         end
-        render(:layout => false, :locals => { :c => params[:c] })
+        render(:layout => false, :locals => params.slice(:q, :c, :o))
     end
 
 private

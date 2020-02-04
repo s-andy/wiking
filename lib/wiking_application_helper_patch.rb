@@ -249,8 +249,9 @@ module WikingApplicationHelperPatch
             )|(
               (?<sep3>@)
               (?<identifier3>[a-zA-Z0-9_\-\.]*[a-zA-Z0-9])
+              (?<option>\((?<display>[^\)]+?)\)|\[(?<format>[^\]]+?)\])?
             ))
-            (?=(?=[[:punct:]]\W)|,|\s|\]|<|\z)
+            (?=(?=[[:punct:]]\W)|'|,|\s|\]|<|\z)
         }x
 
         def parse_redmine_links_with_wiking(text, project, obj, attr, only_path, options)
@@ -262,6 +263,8 @@ module WikingApplicationHelperPatch
             #   user(me)#1 | user(me):s-andy -> Display "me" instead of firstname and lastname
             #   user[f]#1 | user[f]:s-andy -> Display firstname
             #   @s-andy -> Link to user with username "s-andy"
+            #   @s-andy(me) -> Display "me" instead of firstname and lastname
+            #   @s-andy[f] -> Display firstname
             # Files:
             #   file#1 -> Link to file with id 1
             #   file:filename.ext -> Link to file with filename "filename.ext"
@@ -356,9 +359,13 @@ module WikingApplicationHelperPatch
 
         def link_to_user_with_mention(name, user, only_path)
             if user.active?
-                user_id = user.login.match(%r{\A[a-z0-9_\-]+\z}i) ? user.login.downcase : user
-                link = link_to(h(name), { :only_path => only_path, :controller => 'users', :action => 'show', :id => user_id },
-                                          :class => user.css_classes)
+                user_id = user.login.match(%r{\A[a-z0-9_\-]+\z}i) ? user.login.downcase : user.id
+                if Redmine::Plugin.installed?(:redmine_people) && User.current.allowed_people_to?(:view_people, user)
+                    url = { :only_path => only_path, :controller => 'people', :action => 'show', :id => user_id }
+                else
+                    url = { :only_path => only_path, :controller => 'users', :action => 'show', :id => user_id }
+                end
+                link = link_to(h(name), url, :class => user.css_classes)
             else
                 link = h(name)
             end

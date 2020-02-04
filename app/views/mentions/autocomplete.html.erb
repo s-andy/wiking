@@ -1,10 +1,17 @@
+<% o = '' unless defined?(o) %>
+
 <%= raw @users.inject({}) { |hash, user|
   if c == '@' && user.login.match(%r{\A[a-z0-9_\-\.]+\z}i)
     user_id = '@' + user.login
-  elsif c == ':' && user.login.match(%r{\A[a-z0-9_\-]+\z}i)
-    user_id = 'user:' + user.login
   else
-    user_id = 'user#' + user.id.to_s
+    if o.empty? && q.present? && !user.firstname.starts_with?(q) && !user.lastname.starts_with?(q) && user.nickname.starts_with?(q)
+      o = "(#{user.nickname})"
+    end
+    if c == ':' && user.login.match(%r{\A[a-z0-9_\-]+\z}i)
+      user_id = 'user' + o + ':' + user.login
+    else
+      user_id = 'user' + o + '#' + user.id.to_s
+    end
   end
 
   hash[user_id] = {

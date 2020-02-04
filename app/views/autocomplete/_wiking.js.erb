@@ -1,11 +1,12 @@
-<% debounce = Setting.plugin_wiking[:autocomplete_debounce].to_i %>
+<% debounce = Setting.plugin_wiking['autocomplete_debounce'].to_i %>
 $('#<%= field_id %>').textcomplete([{
-  match: /(^|\s)((user[#:]|@)([A-Za-z0-9\-_\.]*))$/,
+  match: /(^|\s)((user(\[[^\]]+\]|\([^\)]+\)|)[#:]|@)([A-Za-z0-9\-_\.]*))$/,
   search: function (term, callback, match) {
     var self = this;
     var params = {
-      q: match[4],
-      c: match[3].charAt(match[3].length - 1)
+      q: match[5],
+      c: match[3].charAt(match[3].length - 1),
+      o: match[4]
     };
     <% object = @issue || @message || @news %>
     <% if object && !object.new_record? %>
@@ -15,7 +16,7 @@ $('#<%= field_id %>').textcomplete([{
     <% if @project && !@project.new_record? %>
       params.project_id = <%= @project.id.to_i %>;
     <% end %>
-    if ((match[4].length > 0) || params.object_id || params.project_id) {
+    if ((match[5].length > 0) || params.object_id || params.project_id) {
       $.getJSON('<%= autocomplete_mentions_path %>', params)
        .done(function (resp) {
          self.searchResults = resp;

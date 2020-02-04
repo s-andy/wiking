@@ -1,0 +1,32 @@
+de:
+  permission_view_hidden_content: Versteckte Inhalte anzeigen
+
+  glyph_left_quote: “
+  glyph_right_quote: ”
+
+  label_custom_wiki_macro_plural: Benutzerdefinierte Wiki-Makros
+  label_custom_wiki_macro_new: Neues Macro
+
+  notice_custom_macro_edit: Denken Sie beim Bearbeiten des Makros daran, dass es bereits verwendet werden kann!
+
+  text_custom_wiki_macro_name_info: Nur Kleinbuchstaben (a-z), Zahlen und Unterstriche sind zulässig.
+  text_custom_wiki_macro_desc_info: 'Wiki syntax is supported. Beispiel:'
+  text_custom_wiki_macro_desc_sample: Zeigt eine Liste aller verfügbaren Makros an, einschließlich Beschreibung, falls verfügbar.
+  text_custom_wiki_macro_content_info: 'HTML wird unterstützt. Syntax für Argumente:'
+  text_custom_wiki_macro_named_argument: '%{name} - benanntes Argument, mit der Bezeichnung: name=value.'
+  text_custom_wiki_macro_unnamed_argument: '%[1] - Unbenanntes Argument, das als Wert bezeichnet wird.'
+  text_custom_wiki_macro_body: '%(*) - Textkörper des Makros.'
+
+  label_mentions: Erwähnt
+  label_user_mentions: Erwähnt in %{value}
+  label_view_all_mentions: Ansicht aller Erwähnungen
+  label_total_number_of_mentions: Anzahl aller Erwähnungen
+  label_user_mentioned: User erwähnt
+
+  mail_subject_you_mentioned: Sie wurden erwähnt
+  mail_body_you_mentioned: Sie wurden in %{title} erwähnt.
+  mail_body_check_mention: Um die Erwähnung zu überprüfen, gehen Sie zu
+
+  label_autocomplete_debounce: Deaktivieren der User Erwähnungen
+  label_nickname_custom_field: Benutzerdefinierter Spitzname
+  label_ms: ms

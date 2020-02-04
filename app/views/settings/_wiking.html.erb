@@ -1,5 +1,10 @@
 <p>
   <%= label_tag('settings[autocomplete_debounce]', l(:label_autocomplete_debounce)) %>
-  <%= text_field_tag('settings[autocomplete_debounce]', @settings[:autocomplete_debounce], :size => 5) %>
+  <%= text_field_tag('settings[autocomplete_debounce]', @settings['autocomplete_debounce'], :size => 5) %>
   <%= l(:label_ms) %>
+</p>
+<% custom_fields = UserCustomField.where(:field_format => 'string').order(:position).to_a %>
+<p>
+  <%= label_tag('settings[nickname_custom_field]', l(:label_nickname_custom_field)) %>
+  <%= select_tag('settings[nickname_custom_field]', content_tag('option') + options_from_collection_for_select(custom_fields, :id, :name, @settings['nickname_custom_field'].to_i)) %>
 </p>

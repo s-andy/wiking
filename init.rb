@@ -54,8 +54,8 @@ Rails.configuration.to_prepare do
     end
 
     for model in [ Issue, Journal ]
-        unless Issue.included_modules.include?(WikingNotifiedUsersPatch)
-            Issue.send(:include, WikingNotifiedUsersPatch)
+        unless model.included_modules.include?(WikingNotifiedUsersPatch)
+            model.send(:include, WikingNotifiedUsersPatch)
         end
     end
 end
@@ -79,7 +79,8 @@ Redmine::Plugin.register :wiking do
                       :after => :custom_fields
 
     settings :default => {
-        :autocomplete_debounce => 500
+        'autocomplete_debounce' => 500,
+        'nickname_custom_field' => nil
     }, :partial => 'settings/wiking'
 end
 

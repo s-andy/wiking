@@ -28,4 +28,5 @@ en:
   mail_body_check_mention: To check the mention go to
 
   label_autocomplete_debounce: Debounce for user mention autocomplete
+  label_nickname_custom_field: Nickname custom field
   label_ms: ms

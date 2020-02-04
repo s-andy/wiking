@@ -1,0 +1,1 @@
+jsToolBar.strings['More'] = 'Більше';
