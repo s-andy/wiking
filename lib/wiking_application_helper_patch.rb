@@ -290,7 +290,7 @@ module WikingApplicationHelperPatch
                         if project_identifier
                             project = Project.visible.find_by_identifier(project_identifier)
                         end
-                        if prefix == 'user' && format
+                        if (sep == '@' || prefix == 'user') && format
                             case format
                             when 'fl'
                                 format = 'firstname_lastname'
@@ -346,7 +346,7 @@ module WikingApplicationHelperPatch
                         elsif sep == '@'
                             oname = identifier.gsub(%r{\A"(.*)"\z}, "\\1")
                             if user = User.find_by_login(oname)
-                                link = link_to_user_with_mention(user.name(format), user, only_path)
+                                link = link_to_user_with_mention(display || user.name(format), user, only_path)
                             end
                         end
                     end
