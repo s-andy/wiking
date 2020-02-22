@@ -15,16 +15,9 @@ module WikingNotifiedUsersPatch
     module InstanceMethods
 
         def notified_users_with_mentioned_users
-            if is_a?(Journal)
-                notified = journalized.notified_users_without_mentioned_users
-                if private_notes?
-                    notified.reject!{ |user| !user.allowed_to?(:view_private_notes, journalized.project) }
-                end
-            else
-                notified = notified_users_without_mentioned_users
-            end
-            mentioned = mentioned_users.to_a
-            if mentioned.any?
+            journalized.instance_variable_set(:@skip_mentioned_users, true) if is_a?(Journal)
+            notified = notified_users_without_mentioned_users
+            if !@skip_mentioned_users && (mentioned = mentioned_users.to_a).any?
                 mentioned.reject!{ |user| !visible?(user) } if respond_to?(:visible?)
                 notified += mentioned
                 notified.uniq!
