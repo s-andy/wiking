@@ -19,7 +19,8 @@ module WikingMailerPatch
 
         def deliver_issue_add_with_mentions(issue)
             begin
-                view_context_class.new.textilizable(issue, :description)
+                view_context_class.new.textilizable(issue, :description, :force_notify => true)
+                issue.mentioned_users.reload
             rescue
             end
 
@@ -30,6 +31,7 @@ module WikingMailerPatch
             if journal.notes?
                 begin
                     view_context_class.new.textilizable(journal, :notes)
+                    journal.mentioned_users.reload
                 rescue
                 end
             end

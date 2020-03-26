@@ -25,6 +25,16 @@ module WikingNotifiedUsersPatch
             notified
         end
 
+        def notification_to_be_sent?
+            if is_a?(Issue)
+                Setting.notified_events.include?('issue_added')
+            elsif is_a?(Journal)
+                Setting.notified_events.include?('issue_updated') || Setting.notified_events.include?('issue_note_added')
+            else
+                false
+            end
+        end
+
     end
 
 end
