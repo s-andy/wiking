@@ -1,3 +1,20 @@
+if (typeof jsToolBar.prototype.mention_rule != 'undefined') {
+    jsToolBar.prototype.elements.space6 = {
+        type: 'space'
+    };
+    jsToolBar.prototype.elements.mention = {
+        type: 'button',
+        title: 'User',
+        icon: '../images/user.png',
+        fn: {
+            wiki: function() {
+                this.encloseSelection(this.mention_rule);
+                $(this.textarea).trigger('keyup');
+            }
+        }
+    };
+}
+
 jsToolBar.prototype.elements.more = {
     type: 'button',
     title: 'More',

@@ -80,7 +80,8 @@ Redmine::Plugin.register :wiking do
 
     settings :default => {
         'autocomplete_debounce' => 500,
-        'nickname_custom_field' => nil
+        'nickname_custom_field' => nil,
+        'mention_rule' => nil
     }, :partial => 'settings/wiking'
 end
 

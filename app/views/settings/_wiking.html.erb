@@ -8,3 +8,8 @@
   <%= label_tag('settings[nickname_custom_field]', l(:label_nickname_custom_field)) %>
   <%= select_tag('settings[nickname_custom_field]', content_tag('option') + options_from_collection_for_select(custom_fields, :id, :name, @settings['nickname_custom_field'].to_i)) %>
 </p>
+<p>
+  <%= label_tag('settings[mention_rule]', l(:label_mention_rule)) %>
+  <%= text_field_tag('settings[mention_rule]', @settings['mention_rule'], :size => 10) %>
+  <em class="info"><%= l(:text_mention_rule_settings) %> <%= l(:label_example) %>: user[f]:</em>
+</p>

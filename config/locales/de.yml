@@ -29,4 +29,7 @@ de:
 
   label_autocomplete_debounce: Deaktivieren der User Erwähnungen
   label_nickname_custom_field: Benutzerdefinierter Spitzname
+  label_mention_rule: Erwähnungsregeln
   label_ms: ms
+
+  text_mention_rule_settings: Wenn angegeben, wird eine Wiki-Symbolleistenschaltfläche zum schnellen Einfügen von Benutzererwähnungen aktiviert.

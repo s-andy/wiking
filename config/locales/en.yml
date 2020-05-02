@@ -29,4 +29,7 @@ en:
 
   label_autocomplete_debounce: Debounce for user mention autocomplete
   label_nickname_custom_field: Nickname custom field
+  label_mention_rule: Mention rule
   label_ms: ms
+
+  text_mention_rule_settings: If specified, enables a Wiki toolbar button for quickly inserting user mentions.
