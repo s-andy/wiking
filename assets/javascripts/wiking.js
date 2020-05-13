@@ -5,7 +5,6 @@ if (typeof jsToolBar.prototype.mention_rule != 'undefined') {
     jsToolBar.prototype.elements.mention = {
         type: 'button',
         title: 'User',
-        icon: '../images/user.png',
         fn: {
             wiki: function() {
                 this.encloseSelection(this.mention_rule);
