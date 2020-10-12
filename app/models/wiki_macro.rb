@@ -6,12 +6,12 @@ class WikiMacro < ActiveRecord::Base
     NAME_MAX_LENGTH = 30
 
     validates_presence_of :name, :description, :content
-    validates_length_of :name, :in => 1..NAME_MAX_LENGTH
-    validates_format_of :name, :with => %r{\A[a-z0-9_]+\z}
+    validates_length_of :name, :maximum => NAME_MAX_LENGTH
+    validates_format_of :name, :with => %r{\A[a-z0-9_]+\z}, :allow_blank => true
 
     validate :validate_name
 
-    attr_protected :id
+    attr_protected :id if Rails::VERSION::MAJOR < 5
 
     MACRO_ARGUMENT_RE = %r{%(url)?(?:\{([^{=}]*)\}|\[([0-9]*)\]|\((\**)\))}
 
@@ -94,7 +94,7 @@ private
     def validate_name
         if name_changed?
             if Redmine::WikiFormatting::Macros.available_macros.has_key?(name.to_sym) ||
-                Redmine::WikiFormatting::Macros::Definitions.method_defined?("macro_#{name.downcase}")
+               Redmine::WikiFormatting::Macros::Definitions.method_defined?("macro_#{name.downcase}")
                 errors.add(:name, :taken)
             end
         end

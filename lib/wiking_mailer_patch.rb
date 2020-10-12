@@ -9,8 +9,11 @@ module WikingMailerPatch
             unloadable
 
             class << self
-                alias_method_chain :deliver_issue_add,  :mentions
-                alias_method_chain :deliver_issue_edit, :mentions
+                alias_method :deliver_issue_add_without_mentions, :deliver_issue_add
+                alias_method :deliver_issue_add, :deliver_issue_add_with_mentions
+
+                alias_method :deliver_issue_edit_without_mentions, :deliver_issue_edit
+                alias_method :deliver_issue_edit, :deliver_issue_edit_with_mentions
             end
         end
     end
@@ -43,7 +46,7 @@ module WikingMailerPatch
 
     module InstanceMethods
 
-        def mention(mention)
+        def mention(user, mention)
             subject_prefix = mention.project ? "[#{mention.project.name}] " : ''
 
             redmine_headers('Mentioning-Type' => mention.mentioning.class.name,
@@ -53,10 +56,10 @@ module WikingMailerPatch
 
             @title = mention.title
             @url   = url_for(mention.url)
-            @user  = mention.mentioned
+            @user  = user
 
-            mail(:to            => mention.mentioned.mail,
-                 :subject       => subject_prefix + l(:mail_subject_you_mentioned, :locale =>  mention.mentioned.language)) do |format|
+            mail(:to            => user.mail,
+                 :subject       => subject_prefix + l(:mail_subject_you_mentioned, :locale =>  user.language)) do |format|
                 format.html { render('you_mentioned') }
                 format.text { render('you_mentioned') }
             end

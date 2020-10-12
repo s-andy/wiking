@@ -3,17 +3,21 @@ require_dependency 'redmine/wiki_formatting/textile/helper'
 module WikingWikiHelperPatch
 
     def self.included(base)
-        base.extend(ClassMethods)
         base.send(:include, InstanceMethods)
+        if Redmine::VERSION::MAJOR > 3
+            base.send(:include, Redmine4InstanceMethods)
+        else
+            base.send(:include, Redmine3InstanceMethods)
+        end
         base.class_eval do
             unloadable
 
-            alias_method_chain :heads_for_wiki_formatter, :wiking
-            alias_method_chain :wikitoolbar_for,          :wiking
-        end
-    end
+            alias_method :heads_for_wiki_formatter_without_wiking, :heads_for_wiki_formatter
+            alias_method :heads_for_wiki_formatter, :heads_for_wiki_formatter_with_wiking
 
-    module ClassMethods
+            alias_method :wikitoolbar_for_without_wiking, :wikitoolbar_for
+            alias_method :wikitoolbar_for, :wikitoolbar_for_with_wiking
+        end
     end
 
     module InstanceMethods
@@ -41,6 +45,19 @@ module WikingWikiHelperPatch
                 @wiking_heads_for_wiki_formatter_included = true
             end
         end
+
+    end
+
+    module Redmine4InstanceMethods
+
+        def wikitoolbar_for_with_wiking(field_id, preview_url = preview_text_path)
+            wikitoolbar_for_without_wiking(field_id, preview_url) +
+            javascript_tag(render(:partial => 'autocomplete/wiking.js', :locals => { :field_id => field_id }))
+        end
+
+    end
+
+    module Redmine3InstanceMethods
 
         def wikitoolbar_for_with_wiking(field_id)
             wikitoolbar_for_without_wiking(field_id) +

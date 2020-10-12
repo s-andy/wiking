@@ -12,6 +12,9 @@
 .jstb_more {
     background-image: url(../images/jstoolbar/bt_more.png);
 }
+dt.news-comments {
+    background-image: url(../images/news-comments.png);
+}
 span.wiking-hidden {
     opacity: 0.25;
     filter: alpha(opacity=25);
@@ -225,26 +228,26 @@ span.wiking.smiley-failure {
     background-image: url(../images/link-chiliproject.png);
     padding-left: 11px;
 }
-img.wiking.shadow {
+img.wiking.shadow, img.wiki-class-shadow {
     -moz-box-shadow: 1px 1px 3px 1px #b4b4b4;
     box-shadow: 1px 1px 3px 1px #b4b4b4;
     margin: 2px 4px 4px 2px;
     background-color: #fff;
 }
-img.wiking.mac-shadow {
+img.wiking.mac-shadow, img.wiki-class-mac-shadow {
     -moz-box-shadow: 0px 10px 30px 5px #b4b4b4;
     box-shadow: 0px 10px 30px 5px #b4b4b4;
     margin: 20px 30px 30px 20px;
     background-color: #fff;
 }
-pre.wiking.pressed {
+pre.wiking.pressed, pre.wiki-class-pressed {
     -moz-box-shadow: inset 1px 1px 1px #ddd;
     box-shadow: inset 1px 1px 1px #ddd;
     -moz-text-shadow: 1px 1px 0px #ddd;
     text-shadow: 1px 1px 0px #ddd;
     padding: 2px;
 }
-a.wiking.button {
+a.wiking.button, a.wiki-class-button {
     border-width: 1px;
     border-style: solid;
     -moz-border-radius: 6px;
@@ -258,10 +261,10 @@ a.wiking.button {
     color: #fff;
     display: inline-block;
 }
-a:active.wiking.button {
+a:active.wiking.button, a:active.wiki-class-button {
     border-color: #2C4056 #809fc3 #809fc3 #2C4056;
 }
-.wiking.small {
+.wiking.small, .wiki-class-small {
     font-size: 0.75em;
 }
 .tab-content .contextual {

@@ -8,7 +8,8 @@ module WikingNotifiedUsersPatch
             has_many :mentions, :as => :mentioning, :inverse_of => :mentioning, :dependent => :delete_all
             has_many :mentioned_users, :through => :mentions, :source => :mentioned
 
-            alias_method_chain :notified_users, :mentioned_users
+            alias_method :notified_users_without_mentioned_users, :notified_users
+            alias_method :notified_users, :notified_users_with_mentioned_users
         end
     end
 

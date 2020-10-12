@@ -5,7 +5,7 @@
     <h3><%= format_activity_day(day) %></h3>
     <dl>
       <% @mentions_by_day[day].sort{ |a, b| b.created_on <=> a.created_on }.each do |mention| %>
-        <dt class="<%= mention.class_name %>">
+        <dt class="<%= mention.class_name %> icon icon-<%= mention.class_name %> <%= 'me' if User.current.logged? && User.current == mention.author %>">
           <% if mention.author %>
             <%= avatar(mention.author, :size => 24) %>
           <% end %>
@@ -30,15 +30,23 @@
   <% end %>
 </div>
 
-<div style="float: left;">
-  <% prev_params = params.dup %>
-  <% prev_params[:next_offset] = @prev_offset if @prev_offset %>
-  <% @prev_offset ||= 0 %>
-  <%= link_to("\xc2\xab " + l(:label_previous), prev_params.merge(:offset => @offset), :title => l(:label_previous)) if (@offset - @prev_offset) >= 50 %>
-</div>
-<div style="float: right;">
-  <%= link_to(l(:label_next) + " \xc2\xbb", params.merge(:offset => @next_offset), :title => l(:label_next)) if @next_offset %>
-</div>
+<span class="pagination">
+  <ul class="pages">
+    <% if (@offset - (@prev_offset || 0)) >= 50 %>
+      <li class="previous page">
+        <% prev_params = params.respond_to?(:to_unsafe_hash) ? params.to_unsafe_hash : params.dup %>
+        <% prev_params[:next_offset] = @prev_offset if @prev_offset %>
+        <%= link_to("\xc2\xab " + l(:label_previous), prev_params.merge(:offset => @offset), :title => l(:label_previous), :accesskey => accesskey(:previous)) %>
+      </li>
+    <% end %>
+    <% if @next_offset %>
+      <li class="next page">
+        <% next_params = params.respond_to?(:to_unsafe_hash) ? params.to_unsafe_hash : params %>
+        <%= link_to(l(:label_next) + " \xc2\xbb", next_params.merge(:offset => @next_offset), :title => l(:label_next), :accesskey => accesskey(:next)) %>
+      </li>
+    <% end %>
+  </ul>
+</span>
 
 <p>&nbsp;</p>
 

@@ -7,7 +7,8 @@ module WikingPDFPatch
         base.class_eval do
             unloadable
 
-            alias_method_chain :formatted_text, :wiking
+            alias_method :formatted_text_without_wiking, :formatted_text
+            alias_method :formatted_text, :formatted_text_with_wiking
         end
     end
 

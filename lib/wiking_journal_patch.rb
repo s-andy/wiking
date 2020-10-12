@@ -11,8 +11,8 @@ module WikingJournalPatch
 
     module VisibleMethod
 
-        def visible?(user = nil)
-            journalized.visible?(user) && (!private_notes? || user.allowed_to?(:view_private_notes, project))
+        def visible?(user = User.current)
+            journalized.visible?(user) && (!private_notes? || (user && user.allowed_to?(:view_private_notes, project)))
         end
 
     end

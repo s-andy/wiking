@@ -5,17 +5,24 @@ require_dependency 'application_helper'
 module WikingApplicationHelperPatch
 
     def self.included(base)
-        base.extend(ClassMethods)
         base.send(:include, InstanceMethods)
         base.class_eval do
             unloadable
 
-            alias_method_chain :textilizable,        :wiking
-            alias_method_chain :parse_headings,      :wiking
-            alias_method_chain :parse_wiki_links,    :wiking
-            alias_method_chain :parse_redmine_links, :wiking
+            alias_method :textilizable_without_wiking, :textilizable
+            alias_method :textilizable, :textilizable_with_wiking
 
-            alias_method_chain :link_to_user, :login
+            alias_method :parse_headings_without_wiking, :parse_headings
+            alias_method :parse_headings, :parse_headings_with_wiking
+
+            alias_method :parse_wiki_links_without_wiking, :parse_wiki_links
+            alias_method :parse_wiki_links, :parse_wiki_links_with_wiking
+
+            alias_method :parse_redmine_links_without_wiking, :parse_redmine_links
+            alias_method :parse_redmine_links, :parse_redmine_links_with_wiking
+
+            alias_method :link_to_user_without_login, :link_to_user
+            alias_method :link_to_user, :link_to_user_with_login
 
             define_method :parse_wiking_conditions, instance_method(:parse_wiking_conditions)
             define_method :parse_glyphs,            instance_method(:parse_glyphs)
@@ -31,21 +38,23 @@ module WikingApplicationHelperPatch
         end
     end
 
-    module ClassMethods
-    end
-
     module InstanceMethods
 
         LT = "&lt;"
         GT = "&gt;"
 
-        def update_mentions(object, mentions = [])
-            mentions.uniq!
-            digest = mentions.collect(&:id).sort.join(',')
-            unless digest == Mention.digest(object)
+        def update_mentions(object, users = [])
+            users.uniq!
+            new_digest = users.collect(&:id).sort.join(',')
+            old_digest = Mention.digest(object)
+            unless new_digest == old_digest
+                stored_user_ids = old_digest.split(',')
                 Mention.transaction do
-                    mentions.each do |user|
-                        Mention.create(:mentioning => object, :mentioned => user)
+                    users.each do |user|
+                        Mention.create(:mentioning => object, :mentioned => user) unless stored_user_ids.include?(user.id.to_s)
+                    end
+                    if (removed_mentions = stored_user_ids - new_digest.split(',')).any?
+                        Mention.drop(object, removed_mentions)
                     end
                 end
             end
@@ -178,7 +187,7 @@ module WikingApplicationHelperPatch
                 object = args[0]
             end
 
-            if object && !object.new_record? && (!object.changed? || options[:force_notify]) && # In after_create changed? is true
+            if object && !object.new_record? && (!object.changed? || options[:force_notify]) && # In after_create changed? is true in Redmine 3.4 and below
                (controller_name rescue nil) != 'previews' && (action_name rescue nil) != 'preview'
                 update_mentions(object, @mentions)
             end
@@ -214,20 +223,21 @@ module WikingApplicationHelperPatch
                         end
                         page = URI.escape(page.gsub(%r{\s}, '_'))
                         page << '#' + URI.escape(anchor) if anchor
-                        link_to(h(title), "http://#{URI.escape(lang)}.wikipedia.org/wiki/#{page}", :class => 'wiking external wiking-wikipedia')
+                        link_to(h(title), "https://#{URI.escape(lang)}.wikipedia.org/wiki/#{page}", :class => 'wiking external wiking-wikipedia')
                     when 'google'
-                        link_to(h(title), "http://www.google.com/search?q=#{URI.escape(page)}", :class => 'wiking external wiking-google')
+                        link_to(h(title), "https://www.google.com/search?q=#{URI.escape(page)}", :class => 'wiking external wiking-google')
                     when 'redmine', 'chiliproject'
                         if page =~ %r{\A#([0-9]+)\z}
                             page = $1
-                            link_to(h(title).gsub(%r{##{page}}){ |s| "!##{page}" }, "http://www.#{resource}.org/issues/#{page}", :class => "wiking external wiking-#{resource} wiking-issue")
+                            title.gsub!(%r{##{page}}){ |s| "!##{page}" } if Redmine::VERSION::MAJOR < 3 || (Redmine::VERSION::MAJOR == 3 && Redmine::VERSION::MINOR < 4)
+                            link_to(h(title), "https://www.#{resource}.org/issues/#{page}", :class => "wiking external wiking-#{resource} wiking-issue")
                         else
                             if page =~ %r{\A(.+?)#(.*)\z}
                                 page, anchor = $1, $2
                             end
                             page = URI.escape(page)
                             page << '#' + URI.escape(anchor) if anchor
-                            link_to(h(title), "http://www.#{resource}.org/projects/#{resource}/wiki/#{page}", :class => "wiking external wiking-#{resource}")
+                            link_to(h(title), "https://www.#{resource}.org/projects/#{resource}/wiki/#{page}", :class => "wiking external wiking-#{resource}")
                         end
                     end
                 else
@@ -310,11 +320,11 @@ module WikingApplicationHelperPatch
                             oid = identifier.to_i
                             case prefix
                             when 'user'
-                                if user = User.find_by_id(oid)
+                                if user = User.visible.find_by(:id => oid, :type => 'User')
                                     link = link_to_user_with_mention(display || user.name(format), user, only_path)
                                 end
                             when 'file'
-                                if project && file = Attachment.find_by_id(oid)
+                                if project && (file = Attachment.find_by_id(oid)) && file.visible?
                                     if (file.container.is_a?(Version) && file.container.project == project) ||
                                        (file.container.is_a?(Project) && file.container == project)
                                         name = display || file.filename
@@ -327,7 +337,7 @@ module WikingApplicationHelperPatch
                             oname = identifier.gsub(%r{\A"(.*)"\z}, "\\1")
                             case prefix
                             when 'user'
-                                if user = User.find_by_login(oname)
+                                if user = User.visible.find_by("LOWER(login) = :login AND type = 'User'", :login => oname.downcase)
                                     link = link_to_user_with_mention(display || user.name(format), user, only_path)
                                 end
                             when 'file'
@@ -337,7 +347,7 @@ module WikingApplicationHelperPatch
                                         conditions = "(#{conditions}) OR "
                                         conditions << "(container_type = 'Version' AND container_id IN (#{project.versions.collect{ |version| version.id }.join(', ')}))"
                                     end
-                                    if file = Attachment.where(conditions).find_by_filename(oname)
+                                    if (file = Attachment.where(conditions).find_by_filename(oname)) && file.visible?
                                         name = display || file.filename
                                         link = link_to(h(name), { :only_path => only_path, :controller => 'attachments', :action => 'download', :id => file },
                                                                   :class => 'attachment')
@@ -346,7 +356,7 @@ module WikingApplicationHelperPatch
                             end
                         elsif sep == '@'
                             oname = identifier.gsub(%r{\A"(.*)"\z}, "\\1")
-                            if user = User.find_by_login(oname)
+                            if user = User.visible.find_by("LOWER(login) = :login AND type = 'User'", :login => oname.downcase)
                                 link = link_to_user_with_mention(display || user.name(format), user, only_path)
                             end
                         end
@@ -359,7 +369,7 @@ module WikingApplicationHelperPatch
         end
 
         def link_to_user_with_mention(name, user, only_path)
-            if user.active?
+            if user.active? || (User.current.admin? && user.logged?)
                 user_id = user.login.match(%r{\A[a-z0-9_\-]+\z}i) ? user.login.downcase : user.id
                 if Redmine::Plugin.installed?(:redmine_people) && User.current.allowed_people_to?(:view_people, user)
                     url = { :only_path => only_path, :controller => 'people', :action => 'show', :id => user_id }
@@ -392,9 +402,8 @@ module WikingApplicationHelperPatch
         def inline_quotes(text)
             text.gsub!(WIKING_QUOTES_RE) do |match|
                 leading, esc, closing = $1 || $3, $2 || $4, $3
-                glyph = ll(Setting.default_language, closing.nil? ? :glyph_left_quote : :glyph_right_quote)
                 if esc.nil?
-                    leading + glyph
+                    leading + ll(Setting.default_language, closing.nil? ? :glyph_left_quote : :glyph_right_quote)
                 else
                     leading + '"'
                 end
@@ -423,12 +432,13 @@ module WikingApplicationHelperPatch
         end
 
         def link_to_user_with_login(user, options = {})
-            if user.is_a?(User) && user.active? && user.login.match(%r{\A[a-z0-9_\-]+\z}i) && user.login != 'current'
+            if user.is_a?(User) && (user.active? || (User.current.admin? && user.logged?)) && user.login.match(%r{\A[a-z0-9_\-]+\z}i) && user.login != 'current'
                 name = h(user.name(options[:format]))
+                only_path = options[:only_path].nil? ? true : options[:only_path]
                 if Redmine::Plugin.installed?(:redmine_people) && User.current.allowed_people_to?(:view_people, user)
-                    link_to(name, { :controller => 'people', :action => 'show', :id => user.login.downcase }, :class => user.css_classes)
+                    link_to(name, { :controller => 'people', :action => 'show', :id => user.login.downcase, :only_path => only_path }, :class => user.css_classes)
                 else
-                    link_to(name, { :controller => 'users', :action => 'show', :id => user.login.downcase }, :class => user.css_classes)
+                    link_to(name, { :controller => 'users', :action => 'show', :id => user.login.downcase, :only_path => only_path }, :class => user.css_classes)
                 end
             else
                 link_to_user_without_login(user, options)

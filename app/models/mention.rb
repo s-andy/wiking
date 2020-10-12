@@ -2,7 +2,7 @@ class Mention < ActiveRecord::Base
     belongs_to :mentioned, :class_name => 'User'
     belongs_to :mentioning, :polymorphic => true
 
-    attr_protected :id
+    attr_protected :id if Rails::VERSION::MAJOR < 5
 
     before_save  :set_created_on
     after_create :send_notification
@@ -29,7 +29,7 @@ class Mention < ActiveRecord::Base
                 return if mentioning.respond_to?(:notified_users) && mentioning.notified_users.include?(mentioned)
                 return if mentioning.respond_to?(:notified_watchers) && mentioning.notified_watchers.include?(mentioned)
             end
-            Mailer.mention(self).deliver
+            Mailer.mention(mentioned, self).deliver
         end
     rescue Exception => exception
         Rails.logger.error exception.message
@@ -46,7 +46,8 @@ class Mention < ActiveRecord::Base
     end
 
     def project
-        @project ||= if mentioning.respond_to?(:mentioning_project)
+        return @project if defined?(@project)
+        @project = if mentioning.respond_to?(:mentioning_project)
             mentioning.mentioning_project
         elsif mentioning.respond_to?(:project)
             mentioning.project
@@ -56,7 +57,8 @@ class Mention < ActiveRecord::Base
     end
 
     def title
-        @title ||= if mentioning.respond_to?(:mentioning_title)
+        return @title if defined?(@title)
+        @title = if mentioning.respond_to?(:mentioning_title)
             mentioning.mentioning_title
         elsif mentioning.respond_to?(:event_title)
             mentioning.event_title
@@ -72,7 +74,8 @@ class Mention < ActiveRecord::Base
     end
 
     def url
-        @url ||= if mentioning.respond_to?(:mentioning_url)
+        return @url if defined?(@url)
+        @url = if mentioning.respond_to?(:mentioning_url)
             mentioning.mentioning_url
         elsif mentioning.respond_to?(:event_url)
             mentioning.event_url
@@ -84,7 +87,8 @@ class Mention < ActiveRecord::Base
     end
 
     def description
-        @description ||= if mentioning.respond_to?(:mentioning_description)
+        return @description if defined?(@description)
+        @description = if mentioning.respond_to?(:mentioning_description)
             mentioning.mentioning_description
         elsif mentioning.respond_to?(:summary)
             mentioning.summary
@@ -100,7 +104,8 @@ class Mention < ActiveRecord::Base
     end
 
     def author
-        @author ||= if mentioning.respond_to?(:mentioning_author)
+        return @author if defined?(@author)
+        @author = if mentioning.respond_to?(:mentioning_author)
             mentioning.mentioning_author
         elsif mentioning.respond_to?(:event_author)
             mentioning.event_author
@@ -116,6 +121,11 @@ class Mention < ActiveRecord::Base
                                "FROM #{Mention.table_name} " +
                                "WHERE mentioning_type = '#{object.class.name}' AND mentioning_id = #{object.id} " +
                                "ORDER BY mentioned_id").flatten.uniq.join(',')
+    end
+
+    def self.drop(object, ids)
+        connection.delete("DELETE FROM #{Mention.table_name} " +
+                          "WHERE mentioning_type = '#{object.class.name}' AND mentioning_id = #{object.id} AND mentioned_id IN (#{ids.join(',')})")
     end
 
 end

@@ -1,8 +1,8 @@
 class MentionsController < ApplicationController
     include ApplicationHelper
 
-    before_filter :find_user,               :only => :index
-    before_filter :find_object_and_project, :only => :autocomplete
+    before_action :find_user,               :only => :index
+    before_action :find_object_and_project, :only => :autocomplete
 
     def index
         count = 0
@@ -64,8 +64,8 @@ class MentionsController < ApplicationController
             conditions << "#{User.table_name}.id LIKE :q" if params[:c] == '#'
             if (nickname_custom_field_id = Setting.plugin_wiking['nickname_custom_field'].to_i) > 0
                 scope = scope.joins("LEFT JOIN #{CustomValue.table_name} ON #{CustomValue.table_name}.customized_type = '#{Principal.name}' AND " +
-                                                                      "#{CustomValue.table_name}.customized_id = #{Principal.table_name}.id AND " +
-                                                                      "#{CustomValue.table_name}.custom_field_id = #{nickname_custom_field_id} AND #{CustomValue.table_name}.value <> ''")
+                                                                           "#{CustomValue.table_name}.customized_id = #{Principal.table_name}.id AND " +
+                                                                           "#{CustomValue.table_name}.custom_field_id = #{nickname_custom_field_id} AND #{CustomValue.table_name}.value <> ''")
                 conditions << "LOWER(#{CustomValue.table_name}.value) LIKE LOWER(:q)"
             end
             @users = scope.sorted.where(conditions.join(' OR '), :q => "#{params[:q]}%").limit(10)

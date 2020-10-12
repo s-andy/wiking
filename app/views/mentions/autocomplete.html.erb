@@ -1,7 +1,7 @@
 <% o = '' unless defined?(o) && o %>
 
 <%= raw @users.inject({}) { |hash, user|
-  if o.empty? && q.present? && !user.firstname.starts_with?(q) && !user.lastname.starts_with?(q) && user.nickname.starts_with?(q)
+  if o.empty? && q.present? && !user.firstname.starts_with?(q) && !user.lastname.starts_with?(q) && user.nickname && user.nickname.starts_with?(q)
     o = "(#{user.nickname})"
   end
   if c == '@' && user.login.match(%r{\A[a-z0-9_\-\.]+\z}i)

@@ -66,7 +66,7 @@ Redmine::Plugin.register :wiking do
     author_url 'http://www.andriylesyuk.com/'
     description 'Wiki Next Generation plugin that extends Redmine Wiki syntax.'
     url 'http://projects.andriylesyuk.com/projects/wiking'
-    version '1.1.0'
+    version '1.2.0'
 
     project_module :wiki do
         permission :view_hidden_content, {}

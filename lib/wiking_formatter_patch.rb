@@ -3,7 +3,6 @@ require_dependency 'redmine/wiki_formatting/textile/formatter'
 module WikingFormatterPatch
 
     def self.included(base)
-        base.extend(ClassMethods)
         base.send(:include, InstanceMethods)
         base.class_eval do
             include Redmine::I18n
@@ -12,9 +11,6 @@ module WikingFormatterPatch
             self::RULES << :inline_wiking_markers
             self::RULES << :inline_wiking_smileys
         end
-    end
-
-    module ClassMethods
     end
 
     module InstanceMethods
